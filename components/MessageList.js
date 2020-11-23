@@ -2,8 +2,10 @@
 // ES6 모듈 (컴포넌트)
 // 컴포넌트를 정의하는 options 객체를 기본 내보내기로 내보낸다.
 import MessageListItem from './MessageListItem.js';
+import lifecycleLogger from '../mixins/lifecycle-logger.mixin.js';
 export default {
   name: 'MessageList',
+  mixins: [lifecycleLogger],
   components: {
     MessageListItem
   },

@@ -28,11 +28,18 @@
   </div> 
 
   <script src="https://unpkg.com/vue@2.5.13/dist/vue.js"></script>  <!-- 스크립트로 vue 참조 --> 
-  
   <script type="module">  // MessageList를 ES6 모듈로 생성했기 때문에, type="module"을 추가하고, 컴포넌트를 가져와야한다.
   import MessageList from './components/MessageList.js';
-    let vm = new Vue({
+  import LifecycleLogger from './plugins/lifecycle-logger.plugin.js'
+  import './directives/focus.directive.js';
+  import './filters/datetime.filter.js';
+
+  Vue.use(LifecycleLogger, { beforeMount: false })  // 플러그인 사용
+
+    window.vm = new Vue({
       el: '#app',
+      name: 'MessagesApp',
+      // mixins: [lifecycleLogger],
       components: {
         MessageList       // MessageList:MessageList의 축약 표현
       },

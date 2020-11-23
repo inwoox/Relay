@@ -1,5 +1,6 @@
 package app.messages;
 
+@Component
 public class MessageService {
   private MessageRepository messageRepo;
 

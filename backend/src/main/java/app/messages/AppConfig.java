@@ -8,13 +8,4 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("app.messages") // 컴포넌트를 스캔할 기본 패키지를 알려주기 위해
 public class AppConfig {
 
-  @Bean // 빈 생성
-  public MessageRepository messageRepository() {
-    return new MessageRepository();
-  }
-
-  @Bean
-  MessageService messageService() {
-    return new MessageService(messageRepository());
-  }
 }

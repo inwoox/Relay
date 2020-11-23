@@ -3,6 +3,7 @@ package app.messages;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+@Component
 public class MessageRepository {
   private final static Log log = LogFactory.getLog(MessageRepository.class);
 

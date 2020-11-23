@@ -14,12 +14,13 @@
 </head>
 <body>
   <div id="app" v-cloak>
-    <ul>
+    <!-- <ul>
       <li v-for="message in messages">
         {{message.text}} - {{message.createdAt}}
         <button @click="deleteMessage(message)">X</button>
       </li>
-    </ul>
+    </ul> -->
+    <message-list :items="messages" @delete="deleteMessage"></message-list>                                          <!-- 컴포넌트 사용 -->
     <form v-on:submit.prevent="addMessage">                        <!-- submit 이벤트가 트리거될 때, 메서드를 호출하지만, 브라우저가 폼을 제출하지 않음 -->
       <textarea v-model="newMessage" placeholder="Leave a message"></textarea>
       <div><button v-bind:disabled="addDisabled" type="submit">Add</button></div>                <!-- submit 이벤트를 트리거하는 버튼 -->
@@ -27,7 +28,9 @@
   </div> 
 
   <script src="https://unpkg.com/vue@2.5.13/dist/vue.js"></script>  <!-- 스크립트로 vue 참조 --> 
+  
   <script type="module">  // MessageList를 ES6 모듈로 생성했기 때문에, type="module"을 추가하고, 컴포넌트를 가져와야한다.
+  import MessageList from './components/MessageList.js';
     let vm = new Vue({
       el: '#app',
       components: {
@@ -46,7 +49,7 @@
       methods: {              // 메서드를 만드는데 화살표 함수 구문을 사용하면 안된다. this로 Vue 인스턴스에 접근할 수 없기 때문
         addMessage (event) {
           if(!this.newMessage) { return; }
-          this.messages.push({ text: this.newMessage, createdAt: new Date()});
+          this.messages.push({ id:now.getTime(), text: this.newMessage, createdAt: new Date()});
           this.newMessage = '';
         },
         deleteMessage (message) {

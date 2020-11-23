@@ -8,59 +8,29 @@
   <artifactId>messages</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <properties>
-    <spring.version>5.0.3.RELEASE</spring.version>
-    <log4j.version>2.10.0</log4j.version>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
-  </properties>
+  <!-- 스프링 부트의 starter를 사용하는 경우, 의존 라이브러리들의 버전은 여기에서 정의한다. -->
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.3.5.RELEASE</version>
+  </parent>
 
   <dependencies>
     <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>${spring.version}</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <version>${log4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-      <version>${log4j.version}</version>
-    </dependency>
-
 
   </dependencies>
 
+  <!-- java -jar 로 수행하려고하면, 실행이 되지 않는다. / maven-assembly-plugin으로 스프링 부트 애플리케이션을 실행할 수 없기 때문 -->
+  <!-- 그래서 스프링 부트 애플리케이션을 실행하기 위해, spring-boot-maven-plugin 의존성을 추가한다 -->
   <build>
     <finalName>messages</finalName>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
-              <archive>
-                <manifest>
-                  <mainClass>app.messages.Application</mainClass>
-                </manifest>
-              </archive>
-              <!-- 명령줄에서 .jar 파일을 실행하기위해, spring-context-5.0.3.RELEASE.jar 파일을 .jar 파일에 포함해야한다. -->
-              <descriptorRefs>
-                <descriptorRef>jar-with-dependencies</descriptorRef>
-              </descriptorRefs>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

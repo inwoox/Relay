@@ -1,2 +1,32 @@
 server:
   port: 8081
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/app_messages?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.jdbc.Driver
+# MYSQL을 도커로 실행 ----------
+
+# MYSQL 데이터 볼륨 컨테이너 생성 (아래 내용의 Dockerfile로 볼륨 컨테이너 생성)
+# FROM busybox
+# VOLUME /var/lib/mysql
+# CMD ["bin/true"]
+# 이 도커 파일을 통해, docker image build -t mysql-data:latest . 와 같이 이미지를 빌드
+# docker container run -d --name mysql-data mysql-data:latest 그리고 나서 백그라운드로 실행
+# 하지만 CMD 인스트럭션에서 셸을 실행하는 것이 전부기 때문에, 금방 실행이 종료된다.
+
+# MYSQL 실행
+# 그러고나서 볼륨 컨테이너 mysql-data를 MYSQL 컨테이너에 마운트하여 , MYSQL 컨테이너 실행
+# docker container run -d --rm -p 3306:3306 --name mysql --volumes-from mysql-data mysql:5.7
+
+# docker container run -d -p 3306:3306 --name mysql -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" \
+# -e "MYSQL_DATABASE=test_db" -e "MYSQL_USER=user" -e "MYSQL_PASSWORD=1234" \
+# --volumes-from mysql-data mysql:5.7
+
+# MYSQL 패스워드 변경
+# docker container exec -it mysql mysqladmin -uroot -p   password "1234"  # 공백을 1234로 바꾼다
+
+# MYSQL 접속
+# docker container exec -it mysql mysql -u root -p / password 입력

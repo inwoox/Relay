@@ -1,13 +1,18 @@
 package app.messages;
 
-public class Message {
-  private String text;
+import lombok.*;
+import java.util.Date;
 
+@Getter
+@AllArgsConstructor
+public class Message {
+  private Integer id;
+  private String text;
+  private Date createdDate;
+
+  @Builder
   public Message(String text) {
     this.text = text;
-  }
-
-  public String getText() {
-    return text;
+    this.createdDate = new Date();
   }
 }

@@ -16,5 +16,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application {
   public static void main(String[] args) {
     SpringApplication.run(Application.class, args);
-  }
-}
+  }}
+
+  #curl-
+
+  X POST-d'{"text":"Hello, Spring Boot"
+}' -H"Content-Type: application/json"http:// localhost:8081/messages | jq

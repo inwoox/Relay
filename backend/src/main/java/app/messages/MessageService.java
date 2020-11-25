@@ -12,22 +12,10 @@ public class MessageService {
   public MessageService(MessageRepository messageRepo) {
     this.messageRepo = messageRepo;
   }
-  // 세터 기반 / 메서드 기반 주입
-  // @Required
-  // public void setRepository(MessageRepository repo) {
-  // this.messageRepo = repo;
-  // }
-  // @Autowired
-  // public void prepare(MessageRepository repo) {
-  // this.messageRepo = repo;
-  // }
-  // 필드 기반 주입
-  // @Autowired
-  // private MessageRepository repo;
 
   // 데이터베이스에 메시지를 저장하는 서비스
-  public void save(String text) {
-    this.messageRepo.saveMessage(new Message(text));
+  public Message save(String text) {
+    return messageRepo.saveMessage(new Message(text));
   }
 
 }

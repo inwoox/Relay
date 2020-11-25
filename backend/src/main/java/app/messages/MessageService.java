@@ -14,6 +14,7 @@ public class MessageService {
   }
 
   // 데이터베이스에 메시지를 저장하는 서비스
+  @SecurityCheck
   public Message save(String text) {
     return messageRepo.saveMessage(new Message(text));
   }

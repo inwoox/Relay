@@ -7,6 +7,13 @@ spring:
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+# 로그 레벨 설정
+logging:
+  level:
+    app:
+      messages:
+        SecurityChecker: DEBUG
 # MYSQL을 도커로 실행 ----------
 
 # MYSQL 데이터 볼륨 컨테이너 생성 (아래 내용의 Dockerfile로 볼륨 컨테이너 생성)

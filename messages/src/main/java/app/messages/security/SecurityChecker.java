@@ -1,4 +1,4 @@
-package app.messages;
+package app.messages.security;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -22,7 +22,7 @@ public class SecurityChecker {
   // 위의 메서드를 포인트컷 표현식으로 사용하는 (조인 포인트를 둘러싸는 가장 강력한) Around 어드바이스
   @Around("checkMethodSecurity()")
   public Object checkSecurity(ProceedingJoinPoint joinPoint) throws Throwable {
-    logger.debug("Checking method security.. ");
+    logger.debug("[AOP] Checking method security.. ");
     // TODO 보안 검사 로직
     Object result = joinPoint.proceed();
     return result;

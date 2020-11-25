@@ -19,8 +19,10 @@ logging:
   level:
     app:
       messages:
-        SecurityChecker: DEBUG # 디버그 레벨 로그 활성화
-        MessageService: DEBUG
+        service:
+          MessageService: DEBUG # 디버그 레벨 로그 활성화
+        security:
+          SecurityChecker: DEBUG
 # MYSQL을 도커로 실행 ----------
 
 # MYSQL 데이터 볼륨 컨테이너 생성 (아래 내용의 Dockerfile로 볼륨 컨테이너 생성)

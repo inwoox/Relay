@@ -1,4 +1,4 @@
-package app.messages;
+package app.messages.service;
 
 import java.util.List;
 
@@ -6,6 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import app.messages.model.Message;
+import app.messages.repository.MessageRepository;
+import app.messages.security.SecurityCheck;
 
 @Component
 public class MessageService {
@@ -28,6 +32,7 @@ public class MessageService {
   @SecurityCheck
   @Transactional(noRollbackFor = { UnsupportedOperationException.class }) // 이 에러는 롤백하지 않음
   public Message save(String text) {
+    logger.debug("[Transaction] {} - saved", text);
     return messageRepo.saveMessage(new Message(text));
   }
 }

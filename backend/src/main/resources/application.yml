@@ -8,12 +8,19 @@ spring:
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-# 로그 레벨 설정
+  # 스프링부트가 JPA의 인터페이스인 EntityManager를 현재 스레드에 등록하는 OpenEntityManagerInViewInterceptor를 생성한다. 하지만
+  # 리포지토리에서 하이버네이트의 SessionFactory를 사용하기 때문에, 트랜잭션 어드바이스에서 EntityManager를 SessionFactory로 캐스팅을 시도
+  # 이것을 해결하기 위해서는, SessionFactory 대신 EntityManager를 사용하거나, 아래와 같이 이 기능을 해제한다.
+  jpa:
+    open-in-view: false
+
+# slf4j 로그 레벨 설정
 logging:
   level:
     app:
       messages:
-        SecurityChecker: DEBUG
+        SecurityChecker: DEBUG # 디버그 레벨 로그 활성화
+        MessageService: DEBUG
 # MYSQL을 도커로 실행 ----------
 
 # MYSQL 데이터 볼륨 컨테이너 생성 (아래 내용의 Dockerfile로 볼륨 컨테이너 생성)

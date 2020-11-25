@@ -16,11 +16,12 @@ public class MessageRepository {
     this.sessionFactory = sessionFactory;
   }
 
-  // 하이버네이트 ORM (JPA 구현체 사용) / spring-data-jpa를 사용하면 이마저도 필요 없다.
+  // 하이버네이트 ORM (JPA 구현체) 사용 / spring-data-jpa를 사용하면 이마저도 필요 없다.
   public Message saveMessage(Message message) {
-    Session session = sessionFactory.openSession();
+    // openSession()으로는 DataSource에서 JDBC 커넥션을 얻게 되므로, 오류시
+    // 트랜잭션 어드바이저가 획득한 연결과 다르기 때문에, getCurrentSession()으로 변경
+    Session session = sessionFactory.getCurrentSession(); // openSession()
     session.save(message);
-    log.info(message + " saved!");
     return message;
 
     // 스프링 JDBC 사용

@@ -2,8 +2,6 @@ package app.messages.repository;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -14,7 +12,7 @@ import app.messages.model.Message;
 @Component
 public class MessageRepository {
   // log4j를 통한 로깅
-  private final static Log log = LogFactory.getLog(MessageRepository.class);
+  // private final static Log log = LogFactory.getLog(MessageRepository.class);
   private SessionFactory sessionFactory;
 
   public MessageRepository(SessionFactory sessionFactory) {

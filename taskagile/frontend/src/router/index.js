@@ -6,6 +6,11 @@ const routes = [
     path: '/login',
     name: 'LoginPage',
     component: LoginPage
+  },
+  {
+    path: '/',
+    name: 'MainPage',
+    component: LoginPage
   }
 ]
 

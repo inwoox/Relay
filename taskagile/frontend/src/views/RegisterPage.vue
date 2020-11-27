@@ -1,22 +1,23 @@
-// Header
-  // 전체 폼
-    // 로고 / 설명
-    // 회원 가입 폼
-      // 이름
-        // 이름 입력
-        // 이름 필드 오류 표시
-      // 이메일
-        // 이메일 입력
-        // 이메일 필드 오류 표시
-      // 패스워드
-        // 패스워드 입력
-        // 패스워드 필드 오류 표시
-      // submit
-        // submit 버튼
-        // 동의 안내 / 로그인 링크
-// Footer
-  // copyright
-  // About, 서비스 약관, 개인정보보호 정책, SNS, GitHub 등
+
+  // Header
+    // 전체 폼
+      // 로고 / 설명
+      // 회원 가입 폼
+        // 이름
+          // 이름 입력
+          // 이름 필드 오류 표시
+        // 이메일
+          // 이메일 입력
+          // 이메일 필드 오류 표시
+        // 패스워드
+          // 패스워드 입력
+          // 패스워드 필드 오류 표시
+        // submit
+          // submit 버튼
+          // 동의 안내 / 로그인 링크
+  // Footer
+    // copyright
+    // About, 서비스 약관, 개인정보보호 정책, SNS, GitHub 등
 
 <template>
   <div class="container">
@@ -109,6 +110,7 @@ export default {
       errorMessage: ''
     }
   },
+  // 여러개의 Vuelidate 내장 검증기를 가져와서, 유효성 검증 조건을 설정하고, 이것을 통해 필드 오류 표시 부분을 작성한다.
   validations: {
     username: { required, minLength: minLength(2), maxLength: maxLength(50), alphaNum },
     emailAddress: { required, email, maxLength: maxLength(100) },
@@ -116,6 +118,8 @@ export default {
   },
   methods: {
     submitForm () {
+      // vuelidate가 생성하여 Vue 인스턴스에 추가한 $v 객체로 Vuelidate API에 접근 / $v 객체는 검증에 대한 현재 상태를 가진다
+      // $v.$touch() 메서드를 호출해 데이터 검증 시작 / 그 다음 $v.$invalid 속성으로 결과 확인 , 검증이 실패시 $invalid 값은 true가 된다.
       this.$v.$touch()
       if (this.$v.$invalid) return
       registrationService.register(this.form).then(() => {
@@ -128,17 +132,18 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-  .container { max-width: 900px; }
-  // Header
-  .register-form { margin-top: 50px; max-width: 320px;}
-  .register-form .logo-wrapper { text-align: center; margin-bottom: 40px; }
-  .register-form .logo-wrapper .tagline { line-height: 180%; color: #666; }
-  .register-form .logo-wrapper .logo { max-width: 150px; margin: 0 auto; }
-  .register-form .form-group label { font-weight: bold; color: #555; }
-  .register-form .accept-terms { margin: 20px 0 40px 0; }
-  // Footer
-  .footer { width: 100%; font-size: 13px; color: #666; line-height: 40px; border-top: 1px solid #ddd; margin-top:50px; }
-  .footer .list-inline-item { margin-right: 10px; }
-  .footer a { color: #666; }
+// 태그의 구조대로 스타일의 태그도 작성한다.
+<style lang="scss" scoped> // scoped 속성을 가지고있을 때, CSS는 현재 컴포넌트의 엘리먼트에만 적용
+    .container { max-width: 900px; }
+    // Header
+    .register-form { margin-top: 50px; max-width: 320px;}
+    .register-form .logo-wrapper { text-align: center; margin-bottom: 40px; }
+    .register-form .logo-wrapper .tagline { line-height: 180%; color: #666; }
+    .register-form .logo-wrapper .logo { max-width: 150px; margin: 0 auto; }
+    .register-form .form-group label { font-weight: bold; color: #555; }
+    .register-form .accept-terms { margin: 20px 0 40px 0; }
+    // Footer
+    .footer { width: 100%; font-size: 13px; color: #666; line-height: 40px; border-top: 1px solid #ddd; margin-top:50px; }
+    .footer .list-inline-item { margin-right: 10px; }
+    .footer a { color: #666; }
 </style>

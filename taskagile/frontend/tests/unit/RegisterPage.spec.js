@@ -4,14 +4,13 @@ import VueRouter from 'vue-router'
 import Vuelidate from 'vuelidate'
 import registrationService from '@/services/registration'
 
-// Adding Vue Router to the test so that
-// we can access vm.$router
+// vm.$router에 접근할 수 있도록 테스트에 Vue Router 추가하기
 const localVue = createLocalVue()
 localVue.use(VueRouter)
 localVue.use(Vuelidate)
 const router = new VueRouter()
 
-// Mock dependency registratioService
+// registratioService의 목
 jest.mock('@/services/registration')
 
 describe('RegisterPage.vue', () => {
@@ -40,8 +39,8 @@ describe('RegisterPage.vue', () => {
     registerSpy.mockRestore()
   })
 
-  afterAll(() => {
-    jest.restoreAllMocks()
+  afterAll(() => {         // 모든 테스트의 실행이 완료되면 호출 된다.
+    jest.restoreAllMocks() // registrationService를 복구한다.
   })
 
   it('should render registration form', () => {
@@ -83,7 +82,7 @@ describe('RegisterPage.vue', () => {
 
   it('should fail it is not a new user', async () => {
     expect.assertions(1)
-    // In the mock, only sunny@taskagile.com is new user
+    // 목에서는 'sunny@taskagile.com'만 새로운 사용자다.
     wrapper.vm.form.username = 'ted'
     wrapper.vm.form.emailAddress = 'ted@taskagile.com'
     wrapper.vm.form.password = 'JestRocks!'

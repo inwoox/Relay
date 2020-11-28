@@ -32,7 +32,21 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+		
+		<!-- 테스트 코드 작성 -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -45,13 +59,18 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 
@@ -77,12 +96,16 @@
 				</executions>
 			</plugin>
 			<!-- 이 플러그인을 통해 npm 명령어들을 실행할 수 있다 / mvn install로 실행 -->
-			<!-- 메이븐은 빌드 라이프 사이클에서 효과적으로 활용할 수 있는 다양한 내장 페이즈를 지원하며, 아래에서는 특정 페이즈마다 명령어들을 실행한다. -->
-			<!-- 페이즈 진행 순서 : (초기화) -> (process-resources : 리소스를 목적지 디렉터리로 옮긴다) -> (컴파일) -> (테스트) -->
-			<!-- (prepare-package : 여기서 프론트엔드를 빌드하고, 백엔드 /resources와 /target 폴더로 옮긴다) -> (package : /target 디렉토리를 패키지로 만든다)  -->
-			<!-- (pre-integration-test) -> (start) -> (integration test) -> (post-integration-test) -> (stop) -> (install) -->
+			<!-- 메이븐은 빌드 라이프 사이클에서 효과적으로 활용할 수 있는 다양한 내장 페이즈를 지원하며, 아래에서는 특정 페이즈마다 
+				명령어들을 실행한다. -->
+			<!-- 페이즈 진행 순서 : (초기화) -> (process-resources : 리소스를 목적지 디렉터리로 옮긴다) -> 
+				(컴파일) -> (테스트) -->
+			<!-- (prepare-package : 여기서 프론트엔드를 빌드하고, 백엔드 /resources와 /target 폴더로 옮긴다) 
+				-> (package : /target 디렉토리를 패키지로 만든다) -->
+			<!-- (pre-integration-test) -> (start) -> (integration test) -> (post-integration-test) 
+				-> (stop) -> (install) -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId> 
+				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.6.0</version>
 				<executions>
@@ -92,10 +115,10 @@
 						<goals>
 							<goal>exec</goal>
 						</goals>
-						<!--  페이즈  -->
+						<!-- 페이즈 -->
 						<phase>prepare-package</phase>
 						<configuration>
-							<!--  명령어 기재하는 부분  -->
+							<!-- 명령어 기재하는 부분 -->
 							<executable>npm</executable>
 							<arguments>
 								<argument>install</argument>
@@ -108,10 +131,10 @@
 						<goals>
 							<goal>exec</goal>
 						</goals>
-						<!--  페이즈  -->
+						<!-- 페이즈 -->
 						<phase>prepare-package</phase>
 						<configuration>
-							<!--  명령어 기재하는 부분  -->
+							<!-- 명령어 기재하는 부분 -->
 							<executable>npm</executable>
 							<arguments>
 								<argument>run</argument>
@@ -125,10 +148,10 @@
 						<goals>
 							<goal>exec</goal>
 						</goals>
-						<!--  페이즈  -->
+						<!-- 페이즈 -->
 						<phase>prepare-package</phase>
 						<configuration>
-							<!--  명령어 기재하는 부분  -->
+							<!-- 명령어 기재하는 부분 -->
 							<executable>npm</executable>
 							<arguments>
 								<argument>run</argument>
@@ -142,10 +165,10 @@
 						<goals>
 							<goal>exec</goal>
 						</goals>
-						<!--  페이즈  -->
+						<!-- 페이즈 -->
 						<phase>integration-test</phase>
 						<configuration>
-							<!--  명령어 기재하는 부분  -->
+							<!-- 명령어 기재하는 부분 -->
 							<executable>npm</executable>
 							<arguments>
 								<argument>run</argument>
@@ -159,18 +182,19 @@
 					<workingDirectory>${basedir}/frontend</workingDirectory>
 				</configuration>
 			</plugin>
-			<!--  이 플러그인을 추가하여, 프론트엔드의 빌드 결과를 src/main/resources 디렉토리에 복사  -->
+			<!-- 이 플러그인을 추가하여, 프론트엔드의 빌드 결과를 src/main/resources 디렉토리에 복사 -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.2.0</version>
 				<executions>
-					<!--  prepare-package 페이즈에서 index.html을 /src/main/resources/templates로 옮긴다.  -->
+					<!-- prepare-package 페이즈에서 index.html을 /src/main/resources/templates로 
+						옮긴다. -->
 					<execution>
 						<id>copy frontend template</id>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
-						<!--  페이즈  -->
+						<!-- 페이즈 -->
 						<phase>prepare-package</phase>
 						<configuration>
 							<!-- 목적지 경로 -->
@@ -186,7 +210,8 @@
 							</resources>
 						</configuration>
 					</execution>
-					<!-- prepare-package 페이즈에서 index.html를 제외한 파일들을 /src/main/resources/static으로 옮긴다. -->
+					<!-- prepare-package 페이즈에서 index.html를 제외한 파일들을 /src/main/resources/static으로 
+						옮긴다. -->
 					<execution>
 						<id>copy frontend assets</id>
 						<goals>
@@ -208,9 +233,12 @@
 							</resources>
 						</configuration>
 					</execution>
-					<!-- package 페이즈에서 target/ 디렉토리를 패키지로 만들기 때문에, prepare-package 페이즈에서 target 경로로도 복사한다 -->
-					<!-- 초기화와 컴파일 페이즈 사이의 process-resources 페이즈에서 메이븐이 리소스를 복사하고 처리해서 목적지 디렉토리로 옮기기 때문에 -->
-					<!-- 만약 아래와 같이 target 경로에 복사해주지 않으면, 빌드를 두번 실행하여, src/main/resources의 리소스가 목적지로 옮겨지도록 해야한다. -->
+					<!-- package 페이즈에서 target/ 디렉토리를 패키지로 만들기 때문에, prepare-package 페이즈에서 
+						target 경로로도 복사한다 -->
+					<!-- 초기화와 컴파일 페이즈 사이의 process-resources 페이즈에서 메이븐이 리소스를 복사하고 처리해서 목적지 
+						디렉토리로 옮기기 때문에 -->
+					<!-- 만약 아래와 같이 target 경로에 복사해주지 않으면, 빌드를 두번 실행하여, src/main/resources의 
+						리소스가 목적지로 옮겨지도록 해야한다. -->
 					<execution>
 						<id>copy front-end template to target</id>
 						<goals>
@@ -229,9 +257,12 @@
 							</resources>
 						</configuration>
 					</execution>
-					<!-- package 페이즈에서 target/ 디렉토리를 패키지로 만들기 때문에, prepare-package 페이즈에서 target 경로로도 복사한다 -->
-					<!-- 초기화와 컴파일 페이즈 사이의 process-resources 페이즈에서 메이븐이 리소스를 복사하고 처리해서 목적지 디렉토리로 옮기기 때문에 -->
-					<!-- 만약 아래와 같이 target 경로에 복사해주지 않으면, 빌드를 두번 실행하여, src/main/resources의 리소스가 목적지로 옮겨지도록 해야한다. -->
+					<!-- package 페이즈에서 target/ 디렉토리를 패키지로 만들기 때문에, prepare-package 페이즈에서 
+						target 경로로도 복사한다 -->
+					<!-- 초기화와 컴파일 페이즈 사이의 process-resources 페이즈에서 메이븐이 리소스를 복사하고 처리해서 목적지 
+						디렉토리로 옮기기 때문에 -->
+					<!-- 만약 아래와 같이 target 경로에 복사해주지 않으면, 빌드를 두번 실행하여, src/main/resources의 
+						리소스가 목적지로 옮겨지도록 해야한다. -->
 					<execution>
 						<id>copy front-end assets to target</id>
 						<goals>
@@ -252,7 +283,8 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- src/main/resources 폴더로 복사하는 에셋을 빌드전에 깨끗이 제거한다 / 무엇을 지울지 아래에 명시하고, mvn clean install 명령어로 플러그인 실행 -->
+			<!-- src/main/resources 폴더로 복사하는 에셋을 빌드전에 깨끗이 제거한다 / 무엇을 지울지 아래에 명시하고, 
+				mvn clean install 명령어로 플러그인 실행 -->
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>3.1.0</version>

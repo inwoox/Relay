@@ -62,7 +62,9 @@ public class User extends AbstractBaseEntity {
     return user;
   }
 
-  @Override
+  // 두개의 User 객체를 비교할 때, username과 emailAddress로만 비교하기 위해 (두개만 같으면 같다)
+  // AbstractBaseEntity를 상속하고, equals, hashCode 두개의 메서드를 오버라이드한다.
+  @Override  
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof User)) return false;

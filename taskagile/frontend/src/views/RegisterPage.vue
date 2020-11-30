@@ -40,11 +40,11 @@
             <label for="username"> Username </label>
             <input type="text" class="form-control" id="username" v-model="form.username">
             <!-- 이름 필드 오류 표시 -->
-            <div class="field-error" v-if="$v.username.$dirty">
-              <div class="error" v-if="!$v.username.required">이름을 입력해야합니다.</div>
-              <div class="error" v-if="!$v.username.alphaNum">이름은 글자와 숫자만 가능합니다.</div>
-              <div class="error" v-if="!$v.username.minLength">이름은 {{$v.username.$params.minLength.min}}자 이상이어야합니다.</div>
-              <div class="error" v-if="!$v.username.maxLength">이름은 {{$v.username.$params.maxLength.max}}자 이하여야합니다.</div>
+            <div class="field-error" v-if="$v.form.username.$dirty">
+              <div class="error" v-if="!$v.form.username.required">이름을 입력해야합니다.</div>
+              <div class="error" v-if="!$v.form.username.alphaNum">이름은 글자와 숫자만 가능합니다.</div>
+              <div class="error" v-if="!$v.form.username.minLength">이름은 {{$v.form.username.$params.minLength.min}}자 이상이어야합니다.</div>
+              <div class="error" v-if="!$v.form.username.maxLength">이름은 {{$v.form.username.$params.maxLength.max}}자 이하여야합니다.</div>
             </div>
           </div>
 
@@ -54,10 +54,10 @@
             <label for="emailAddress">Email address</label>
             <input type="email" class="form-control" id="emailAddress" v-model="form.emailAddress">
             <!-- 이메일 필드 오류 표시 -->
-            <div class="field-error" v-if="$v.emailAddress.$dirty">
-              <div class="error" v-if="!$v.emailAddress.required">이메일을 입력해야합니다.</div>
-              <div class="error" v-if="!$v.emailAddress.email">유효한 이메일 주소가 아닙니다.</div>
-              <div class="error" v-if="!$v.emailAddress.maxLength">이메일 주소는 {{$v.emailAddress.$params.maxLength.max}}자 이하여야합니다.</div>
+            <div class="field-error" v-if="$v.form.emailAddress.$dirty">
+              <div class="error" v-if="!$v.form.emailAddress.required">이메일을 입력해야합니다.</div>
+              <div class="error" v-if="!$v.form.emailAddress.email">유효한 이메일 주소가 아닙니다.</div>
+              <div class="error" v-if="!$v.form.emailAddress.maxLength">이메일 주소는 {{$v.form.emailAddress.$params.maxLength.max}}자 이하여야합니다.</div>
             </div>
           </div>
 
@@ -67,10 +67,10 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" v-model="form.password">
             <!-- 패스워드 필드 오류 표시 -->
-            <div class="field-error" v-if="$v.password.$dirty">
-              <div class="error" v-if="!$v.password.required">패스워드를 입력해야합니다.</div>
-              <div class="error" v-if="!$v.password.minLength">패스워드는 {{$v.password.$params.minLength.min}}자 이상이어야합니다.</div>
-              <div class="error" v-if="!$v.password.maxLength">패스워드는 {{$v.password.$params.maxLength.min}}자 이하여야합니다.</div>
+            <div class="field-error" v-if="$v.form.password.$dirty">
+              <div class="error" v-if="!$v.form.password.required">패스워드를 입력해야합니다.</div>
+              <div class="error" v-if="!$v.form.password.minLength">패스워드는 {{$v.form.password.$params.minLength.min}}자 이상이어야합니다.</div>
+              <div class="error" v-if="!$v.form.password.maxLength">패스워드는 {{$v.form.password.$params.maxLength.min}}자 이하여야합니다.</div>
             </div>
           </div>
 
@@ -105,23 +105,42 @@ export default {
   data () {
     return {
       form: {
-        username: '', emailAddress: '', password: ''
+        username: '',
+        emailAddress: '',
+        password: ''
       },
       errorMessage: ''
     }
   },
   // 여러개의 Vuelidate 내장 검증기를 가져와서, 유효성 검증 조건을 설정하고, 이것을 통해 필드 오류 표시 부분을 작성한다.
   validations: {
-    username: { required, minLength: minLength(2), maxLength: maxLength(50), alphaNum },
-    emailAddress: { required, email, maxLength: maxLength(100) },
-    password: { required, minLength: minLength(6), maxLength: maxLength(30) }
+    form: {
+      username: {
+        required,
+        minLength: minLength(2),
+        maxLength: maxLength(50),
+        alphaNum
+      },
+      emailAddress: {
+        required,
+        email,
+        maxLength: maxLength(100)
+      },
+      password: {
+        required,
+        minLength: minLength(6),
+        maxLength: maxLength(30)
+      }
+    }
   },
   methods: {
     submitForm () {
       // vuelidate가 생성하여 Vue 인스턴스에 추가한 $v 객체로 Vuelidate API에 접근 / $v 객체는 검증에 대한 현재 상태를 가진다
       // $v.$touch() 메서드를 호출해 데이터 검증 시작 / 그 다음 $v.$invalid 속성으로 결과 확인 , 검증이 실패시 $invalid 값은 true가 된다.
       this.$v.$touch()
-      if (this.$v.$invalid) return
+      if (this.$v.$invalid) {
+        return
+      }
       registrationService.register(this.form).then(() => {
         this.$router.push({ name: 'LoginPage' })
       }).catch((error) => {

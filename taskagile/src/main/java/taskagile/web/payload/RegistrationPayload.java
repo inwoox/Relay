@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
-import taskagile.domain.application.commands.RegistrationCommand;
+import taskagile.domain.application.command.RegistrationCommand;
 
 @Getter
 @Setter
@@ -26,7 +26,7 @@ public class RegistrationPayload {  // 세개의 필드를 가진다.
   @NotNull
   private String password;
 
-  public RegistrationCommand toCommand() {
+  public RegistrationCommand toCommand() {	// RegistrationPayload에서 받은 값들을 가지고, RegistrationCommand 인스턴스를 생성한다
     return new RegistrationCommand(this.username, this.emailAddress, this.password);
   }
 }

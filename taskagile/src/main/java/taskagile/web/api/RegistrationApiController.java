@@ -12,7 +12,8 @@ import taskagile.domain.model.user.EmailAddressExistsException;
 import taskagile.domain.model.user.RegistrationException;
 import taskagile.domain.model.user.UsernameExistsException;
 import taskagile.web.payload.RegistrationPayload;
-import taskagile.web.results.ApiResult;
+import taskagile.web.result.ApiResult;
+import taskagile.web.result.Result;
 
 @Controller
 public class RegistrationApiController {

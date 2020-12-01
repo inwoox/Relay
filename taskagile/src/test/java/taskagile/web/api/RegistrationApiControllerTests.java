@@ -12,9 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import taskagile.config.SecurityConfiguration;
 import taskagile.domain.application.UserService;
 import taskagile.domain.model.user.EmailAddressExistsException;
 import taskagile.domain.model.user.UsernameExistsException;
@@ -22,7 +25,11 @@ import taskagile.utils.JsonUtils;
 import taskagile.web.payload.RegistrationPayload;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(RegistrationApiController.class)
+@WebMvcTest 									   // 이 어노테이션과 함께 해당 테스트에서는 스프링 시큐리티만 인스턴스화
+
+// 테스트에 SecurityConfiguration을 포함하기 위해 이 어노테이션을 적용한다. / 이때 @WebMvcTest에 있던 RegistrationApiController도 가져와서 같이 넣어야한다.
+@ContextConfiguration(classes = { SecurityConfiguration.class, RegistrationApiController.class }) 
+@ActiveProfiles("test")
 public class RegistrationApiControllerTests {
 
   @Autowired

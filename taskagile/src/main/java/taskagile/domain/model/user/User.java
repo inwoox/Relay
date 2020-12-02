@@ -32,7 +32,7 @@ public class User extends AbstractBaseEntity {
   @Column(name = "email_address", nullable = false, length = 100, unique = true)
   private String emailAddress;
 
-  @Column(name = "password", nullable = false, length = 30)
+  @Column(name = "password", nullable = false, length = 255)
   private String password;
 
   @Column(name = "first_name", nullable = false, length = 45)

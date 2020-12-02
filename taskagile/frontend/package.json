@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bootstrap": "^4.1.3",
+    "error-parser": "^1.0.0",
     "jquery": "^3.3.1",
     "popper.js": "^1.14.4",
     "vue": "^2.5.17",

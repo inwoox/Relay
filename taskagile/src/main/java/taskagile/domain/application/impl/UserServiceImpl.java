@@ -2,6 +2,8 @@ package taskagile.domain.application.impl;
 
 import javax.transaction.Transactional;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -12,7 +14,9 @@ import taskagile.domain.common.mail.MailManager;
 import taskagile.domain.common.mail.MessageVariable;
 import taskagile.domain.model.user.RegistrationException;
 import taskagile.domain.model.user.RegistrationManagement;
+import taskagile.domain.model.user.SimpleUser;
 import taskagile.domain.model.user.User;
+import taskagile.domain.model.user.UserRepository;
 import taskagile.domain.model.user.event.UserRegisteredEvent;
 
 
@@ -48,19 +52,48 @@ import taskagile.domain.model.user.event.UserRegisteredEvent;
 @Service  		// 이 어노테이션이 적용된 클래스는 오직 해당 클래스를 활용하는 클라이언트를 위한 연산을 제공한다는 의미
 @Transactional
 public class UserServiceImpl implements UserService {
+	
+	// UserService 구현체가 구현해야하는 메서드에서는 도메인 서비스와 인프라 서비스에 의존하여, 회원가입이나, 메일 발송, 도메인 이벤트 발송 등을 제공한다.
+	// UserService는 어떤 비즈니스 로직도 포함하지 않는다.
 
   private RegistrationManagement registrationManagement;  // 도메인 서비스 
   private DomainEventPublisher domainEventPublisher;      // 인프라 서비스
-  private MailManager mailManager;						  // 인프라 서비스
+  private MailManager mailManager;						 					  // 인프라 서비스
+  private UserRepository userRepository;        					// 인프라 서비스 - 실제 구현은 인프라 쪽에서 한다.
 
-  public UserServiceImpl(RegistrationManagement registrationManagement, DomainEventPublisher domainEventPublisher, MailManager mailManager) {
+  public UserServiceImpl(RegistrationManagement registrationManagement, DomainEventPublisher domainEventPublisher, 
+  		MailManager mailManager, UserRepository userRepository) {
     this.registrationManagement = registrationManagement;
     this.domainEventPublisher = domainEventPublisher;
     this.mailManager = mailManager;
+    this.userRepository = userRepository;
+  }
+  
+  // UserService가 UserDetailsService를 상속하므로, 이 메서드를 구현해야한다.
+  // 실질적으로 DB에서 User 정보를 가져와, 인증 시 사용할 UserDetails를 반환하는 역할
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+    // 유저 이름이 빈 값이 아닌지 검사
+    if (username == "") {
+      throw new UsernameNotFoundException("No user found");
+    }
+    // 유저 이름에 @가 포함되어 있으면, 일치하는 이메일 주소를 가진 유저를 가져오고
+    // 그렇지 않으면 일치하는 이름을 가진 유저를 가져온다.
+    User user;
+    if (username.contains("@")) {
+      user = userRepository.findByEmailAddress(username);   // 인프라 서비스에 직접 의존하여 UserDetails를 가져온다.
+    } else {
+      user = userRepository.findByUsername(username);
+    }
+    // 리포지토리에서 유저를 찾았는지 검사
+    if (user == null) {
+      throw new UsernameNotFoundException("No user found by `" + username + "`");
+    }
+    // UserDetails, Serializable을 구현하는 SimpleUser 인스턴스를, 매개변수로 유저를 가지고 생성하여 반환
+    return new SimpleUser(user);
   }
 
-  // UserService 구현체가 구현해야하는 메서드에서는 도메인 서비스와 인프라 서비스에 의존하여, 회원가입이나, 메일 발송, 도메인 이벤트 발송 등을 제공한다.
-  // UserService는 어떤 비즈니스 로직도 포함하지 않는다.
   @Override	
   public void register(RegistrationCommand command) throws RegistrationException {
 	// command가 null이면, Assert.notNull() 메서드가 IllegalArgumentException 에러를 던진다. (notNull - 널이 아니어야한다라는 검사 구문)
@@ -68,6 +101,8 @@ public class UserServiceImpl implements UserService {
     
     // 이 이후에 더는 RegistrationCommand 인스턴스를 매개변수로 넘기지 않는다. RegistrationCommand는 컨트롤러와 같은 애플리케이션 서비스의 클라이언트가 활용하는 것이기 때문이다.
     // 애플리케이션 코어에서는 , 코어의 내부가 외부와 분리될 수 있도록 RegistrationCommand를 사용하지 않는다.
+    
+    // 도메인 서비스에 의존하여 , 그 안의 인프라서비스를 통해 유저를 등록한다.
     User newUser = registrationManagement.register(command.getUsername(),command.getEmailAddress(),command.getPassword());
 
     sendWelcomeMessage(newUser); 

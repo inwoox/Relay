@@ -63,11 +63,11 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
   // 가장 널리 사용되는 AuthenticationProvider는 DaoAuthenticationProvider로, UserDetailsService로 데이터베이스에서 같은 사용자 명을 갖는 UserDetails를 로드
   // Authentication으로 넘겨 받은 비밀 번호가 UserDetails에 있는 비밀번호와 일치하는지 검사하는데 PasswordEncoder를 활용, 일치하면 인증 성공, 아니면 실패
   
-  @Override
+  @Override // 인증을 시도하는 메서드
   public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
     throws AuthenticationException, IOException {
 
-    log.debug("Processing login request");
+    log.debug("***** Processing login request *****");
     String requestBody = IOUtils.toString(request.getReader());                        // 요청 바디를 읽어, 문자열로 저장 (요청 바디는 JSON 형식일 것으로 예상)
     LoginRequest loginRequest = JsonUtils.toObject(requestBody, LoginRequest.class);   // 유틸리티 클래스를 통해, JSON 문자열을 LoginRequest 인스턴스로 변환
     if (loginRequest == null || loginRequest.isInvalid()) {

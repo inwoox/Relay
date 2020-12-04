@@ -2,6 +2,8 @@ package taskagile.domain.application.impl;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import org.springframework.util.Assert;
 import taskagile.domain.application.UserService;
 import taskagile.domain.application.command.RegistrationCommand;
 import taskagile.domain.common.event.DomainEventPublisher;
+import taskagile.domain.common.mail.CustomMailSenderInterface;
 import taskagile.domain.common.mail.MailManager;
 import taskagile.domain.common.mail.MessageVariable;
 import taskagile.domain.model.user.RegistrationException;
@@ -18,6 +21,7 @@ import taskagile.domain.model.user.SimpleUser;
 import taskagile.domain.model.user.User;
 import taskagile.domain.model.user.UserRepository;
 import taskagile.domain.model.user.event.UserRegisteredEvent;
+import taskagile.web.api.authenticate.AuthenticationFilter;
 
 
 // 간단한 CRUD 애플리케이션에서는 web, service, domain, dao 등으로 나누는 계층형 아키텍처가 보기 편하고 좋지만,
@@ -53,6 +57,9 @@ import taskagile.domain.model.user.event.UserRegisteredEvent;
 @Transactional
 public class UserServiceImpl implements UserService {
 	
+	// slf4j를 이용한 로그 출력 / 로깅도 추후에는 AOP로 처리한다
+	private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
+	
 	// UserService 구현체가 구현해야하는 메서드에서는 도메인 서비스와 인프라 서비스에 의존하여, 회원가입이나, 메일 발송, 도메인 이벤트 발송 등을 제공한다.
 	// UserService는 어떤 비즈니스 로직도 포함하지 않는다.
 
@@ -60,13 +67,15 @@ public class UserServiceImpl implements UserService {
   private DomainEventPublisher domainEventPublisher;      // 인프라 서비스
   private MailManager mailManager;						 					  // 인프라 서비스
   private UserRepository userRepository;        					// 인프라 서비스 - 실제 구현은 인프라 쪽에서 한다.
+  private CustomMailSenderInterface customMail;
 
   public UserServiceImpl(RegistrationManagement registrationManagement, DomainEventPublisher domainEventPublisher, 
-  		MailManager mailManager, UserRepository userRepository) {
+  		MailManager mailManager, UserRepository userRepository, CustomMailSenderInterface customMail) {
     this.registrationManagement = registrationManagement;
     this.domainEventPublisher = domainEventPublisher;
     this.mailManager = mailManager;
     this.userRepository = userRepository;
+    this.customMail = customMail;
   }
   
   // UserService가 UserDetailsService를 상속하므로, 이 메서드를 구현해야한다.
@@ -96,7 +105,8 @@ public class UserServiceImpl implements UserService {
 
   @Override	
   public void register(RegistrationCommand command) throws RegistrationException {
-	// command가 null이면, Assert.notNull() 메서드가 IllegalArgumentException 에러를 던진다. (notNull - 널이 아니어야한다라는 검사 구문)
+ 
+  	// command가 null이면, Assert.notNull() 메서드가 IllegalArgumentException 에러를 던진다. (notNull - 널이 아니어야한다라는 검사 구문)
     Assert.notNull(command, "Parameter `command` must not be null"); 
     
     // 이 이후에 더는 RegistrationCommand 인스턴스를 매개변수로 넘기지 않는다. RegistrationCommand는 컨트롤러와 같은 애플리케이션 서비스의 클라이언트가 활용하는 것이기 때문이다.
@@ -105,16 +115,23 @@ public class UserServiceImpl implements UserService {
     // 도메인 서비스에 의존하여 , 그 안의 인프라서비스를 통해 유저를 등록한다.
     User newUser = registrationManagement.register(command.getUsername(),command.getEmailAddress(),command.getPassword());
 
+    
     sendWelcomeMessage(newUser); 
     domainEventPublisher.publish(new UserRegisteredEvent(newUser));
+    logger.debug("*** User Registered ***");
   }
 
+  
   private void sendWelcomeMessage(User user) { 
-    mailManager.send(
-      user.getEmailAddress(),
-      "Welcome to TaskAgile",
-      "welcome.ftl",
-      MessageVariable.from("user", user)
-    );
+  	
+  	// 유저, 템플릿, 템플릿에 들어갈 데이터만 포함하여 send 호출
+  	customMail.send(user, "welcome.ftl", MessageVariable.from("user", user));
+  	logger.debug("*** Mail Send ***");
+//    mailManager.send(										 
+//      user.getEmailAddress(),						 // 유저의 이메일 주소
+//      "Welcome to TaskAgile",						 // 제목
+//      "welcome.ftl",										 // 템플릿	
+//      MessageVariable.from("user", user) // 등록하는 유저를 오브젝트로, user라는 이름의 MessageVariable을 생성 / 템플릿의 데이터로 전달됨
+//    );
   }
 }

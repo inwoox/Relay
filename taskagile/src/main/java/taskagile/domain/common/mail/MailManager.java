@@ -2,13 +2,6 @@ package taskagile.domain.common.mail;
 
 public interface MailManager {
 
-  /**
-   * Send a message to a recipient
-   *
-   * @param emailAddress the recipient's email address
-   * @param subject the subject key of the email
-   * @param template the template file name of the email
-   * @param variables message variables in the template file
-   */
+  // 목적지 이메일 주소, 제목, 메일 본문 (템플릿), 템플릿에서 사용될 데이터
   void send(String emailAddress, String subject, String template, MessageVariable... variables);
 }

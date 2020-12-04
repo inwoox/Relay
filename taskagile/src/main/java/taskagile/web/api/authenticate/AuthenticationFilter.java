@@ -67,12 +67,13 @@ public class AuthenticationFilter extends AbstractAuthenticationProcessingFilter
   public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
     throws AuthenticationException, IOException {
 
-    log.debug("***** Processing login request *****");
     String requestBody = IOUtils.toString(request.getReader());                        // 요청 바디를 읽어, 문자열로 저장 (요청 바디는 JSON 형식일 것으로 예상)
     LoginRequest loginRequest = JsonUtils.toObject(requestBody, LoginRequest.class);   // 유틸리티 클래스를 통해, JSON 문자열을 LoginRequest 인스턴스로 변환
     if (loginRequest == null || loginRequest.isInvalid()) {
       throw new InsufficientAuthenticationException("Invalid authentication request");
     }
+    
+    log.debug("***** Processing login request *****");
 
     // 여기서는 Authentication 인터페이스의 구현체인 UsernamePasswordAuthenticationToken 인스턴스를 먼저 생성하고, 
     UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password);

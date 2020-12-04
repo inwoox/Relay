@@ -31,7 +31,7 @@ public class RegistrationManagement {
   // 회원가입의 비즈니스 로직 : 이미 존재하는 사용자, 이메일 주소 등록 불가 / 비밀번호 암호화 / 저장소에 사용자 저장
   public User register(String username, String emailAddress, String password) throws RegistrationException {
 	
-	// 사용자를 찾는데, 인프라 서비스인 repository에 의존한다. 같은 사용자명 또는 이메일 주소를 가지는 다른 사용자가 있으면, 에러를 던진다.
+	// 유저 검색에, 인프라 서비스인 repository에 의존. 같은 사용자명 또는 이메일 주소를 가지는 다른 사용자가 있으면, 에러를 던진다.
 	// 이 에러들은 Exception을 상속한 RegistrationException을 상속하여 구현한다.
     User existingUser = repository.findByUsername(username);
     if (existingUser != null) {

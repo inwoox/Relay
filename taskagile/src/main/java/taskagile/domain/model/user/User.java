@@ -61,6 +61,11 @@ public class User extends AbstractBaseEntity {
     user.createdDate = new Date();
     return user;
   }
+  
+  public void updateName(String firstName, String lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
 
   // 두개의 User 객체를 비교할 때, username과 emailAddress로만 비교하기 위해 (두개만 같으면 같다)
   // AbstractBaseEntity를 상속하고, equals, hashCode 두개의 메서드를 오버라이드한다.

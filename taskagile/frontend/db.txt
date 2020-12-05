@@ -12,3 +12,10 @@ CREATE TABLE user (
 
 // email_address varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
 // created_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+
+# 도커로 MySQL 실행 (mysql-data 볼륨 컨테이너도 같이 연결한다)
+
+docker container run -d -p 3306:3306 --name mysql -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" 
+-e "MYSQL_DATABASE=gogs" -e "MYSQL_USER=gogs" -e "MYSQL_PASSWORD=1234" 
+--volumes-from mysql-data mysql:5.7 

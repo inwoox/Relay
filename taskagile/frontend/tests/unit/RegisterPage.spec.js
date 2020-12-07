@@ -3,6 +3,7 @@ import RegisterPage from '@/views/RegisterPage'
 import VueRouter from 'vue-router'
 import Vuelidate from 'vuelidate'
 import registrationService from '@/services/registration'
+import { i18n } from '@/i18n'
 
 // vm.$router에 접근할 수 있도록 테스트에 Vue Router 추가하기
 const localVue = createLocalVue()
@@ -24,7 +25,8 @@ describe('RegisterPage.vue', () => {
   beforeEach(() => {
     wrapper = mount(RegisterPage, {
       localVue,
-      router
+      router,
+      i18n
     })
     fieldUsername = wrapper.find('#username')                  // id가 username인 요소를 가지는 fieldUsername를 생성
     fieldEmailAddress = wrapper.find('#emailAddress')
@@ -43,7 +45,7 @@ describe('RegisterPage.vue', () => {
   })
 
   it('등록 폼을 작성했는지 체크', () => {
-    expect(wrapper.find('.logo').attributes().src).toEqual('/static/images/logo.png')   // logo 클래스 요소의 src 값이 일치하는지 확인
+    expect(wrapper.find('.logo').attributes().src).toEqual('/images/logo.png')          // logo 클래스 요소의 src 값이 일치하는지 확인
     expect(wrapper.find('.tagline').text()).toEqual('Open source task management tool') // tagline 클래스의 텍스트 값이 일치하는지 확인
     expect(fieldUsername.element.value).toEqual('')                                     // fieldUsername 요소가 만들어져있는지 체크 
     expect(fieldEmailAddress.element.value).toEqual('')

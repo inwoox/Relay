@@ -30,34 +30,36 @@ module.exports = {
       .assert.urlEquals(browser.launchUrl + 'login')
       .end()
   },
-  'login with username': function (browser) {
-    const loginPage = browser.page.LoginPage()
-    const homePage = browser.page.HomePage()
-    loginPage
-      .navigate()
-      .login(data.username, data.password)
+  // 'login with username': function (browser) {
+  //   const loginPage = browser.page.LoginPage()
+  //   const homePage = browser.page.HomePage()
+  //   loginPage
+  //     .navigate()
+  //     .login(data.username, data.password)
 
-    browser.pause(2000)
+  //   browser.pause(2000)
 
-    homePage
-      .navigate()
-      .expect.element('@pageTitle').text.to.contain('Home Page')
+  //   homePage
+  //     .navigate()
+  //     .assert.visible('@logoImage')
 
-    browser.end()
-  },
-  'login with email address': function (browser) {
-    const loginPage = browser.page.LoginPage()
-    const homePage = browser.page.HomePage()
-    loginPage
-      .navigate()
-      .login(data.emailAddress, data.password)
 
-    browser.pause(2000)
+  //   browser.end()
+  // },
+  // 'login with email address': function (browser) {
+  //   const loginPage = browser.page.LoginPage()
+  //   const homePage = browser.page.HomePage()
+  //   loginPage
+  //     .navigate()
+  //     .login(data.emailAddress, data.password)
 
-    homePage
-      .navigate()
-      .expect.element('@pageTitle').text.to.contain('Home Page')
+  //   browser.pause(2000)
 
-    browser.end()
-  }
+  //   homePage
+  //     .navigate()
+  //     .assert.visible('@logoImage')
+
+
+  //   browser.end()
+  // }
 }

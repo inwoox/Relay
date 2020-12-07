@@ -27,7 +27,7 @@
       <div class="register-form">
         <!-- 로고 / 태그 라인 -->
         <div class="logo-wrapper">
-          <img class="logo" src="/static/images/logo.png">
+          <img class="logo" src="/images/logo.png">
           <div class="tagline">Open source task management tool</div>
         </div>
         <!-- 회원가입 폼 -->

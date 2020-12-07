@@ -3,6 +3,7 @@ import Vuelidate from 'vuelidate'
 import VueRouter from 'vue-router'
 import LoginPage from '@/views/LoginPage'
 import authenticationService from '@/services/authentication'
+import { i18n } from '@/i18n'
 
 // Setup local Vue with Vuelidate
 const localVue = createLocalVue()
@@ -23,7 +24,8 @@ describe('LoginPage.vue', () => {
   beforeEach(() => {
     wrapper = mount(LoginPage, {
       localVue,
-      router
+      router,
+      i18n
     })
     fieldUsername = wrapper.find('#username')
     fieldPassword = wrapper.find('#password')
@@ -44,7 +46,7 @@ describe('LoginPage.vue', () => {
   // 로그인 폼을 렌더링 해야한다
   it('should render login form', () => {
     expect(wrapper.find('.logo').attributes().src)
-      .toEqual('/static/images/logo.png')
+      .toEqual('/images/logo.png')
     expect(wrapper.find('.tagline').text())
       .toEqual('Open source task management tool')
     expect(fieldUsername.element.value).toEqual('')

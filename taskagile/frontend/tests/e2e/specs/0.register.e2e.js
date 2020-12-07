@@ -60,7 +60,7 @@ module.exports = {
       .navigate()
       .register(user.username, user.emailAddress, user.password)
 
-    browser.pause(2000)
+    browser.pause(5000)
     browser
       .assert.urlEquals(browser.launchUrl + 'login')
       .end()

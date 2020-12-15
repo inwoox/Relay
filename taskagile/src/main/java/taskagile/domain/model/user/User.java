@@ -12,12 +12,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import lombok.Getter;
 import taskagile.domain.common.model.AbstractBaseEntity;
 
 @Entity
 @Table(name = "user")
-@Getter
 public class User extends AbstractBaseEntity {
 
   private static final long serialVersionUID = -538781580460070724L;
@@ -66,6 +64,36 @@ public class User extends AbstractBaseEntity {
     this.firstName = firstName;
     this.lastName = lastName;
   }
+
+
+  public UserId getId() {
+    return new UserId(id);
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public String getEmailAddress() {
+    return emailAddress;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public Date getCreatedDate() {
+    return createdDate;
+  }
+
 
   // 두개의 User 객체를 비교할 때, username과 emailAddress로만 비교하기 위해 (두개만 같으면 같다)
   // AbstractBaseEntity를 상속하고, equals, hashCode 두개의 메서드를 오버라이드한다.

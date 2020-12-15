@@ -9,6 +9,8 @@ CREATE TABLE user (
   PRIMARY KEY (id)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+// ENGINE - DB의 데이터 엔진 타입 / CHARSET - 문자, 기호와 그에 매칭되는 숫자(인코딩)의 조합 / COLLATE - 어떻게 문자열을 비교하고 정렬할지 정의한 규칙 (가중치)  
+ 
 
 // email_address varchar(100) COLLATE utf8_bin NOT NULL DEFAULT '',
 // created_date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,

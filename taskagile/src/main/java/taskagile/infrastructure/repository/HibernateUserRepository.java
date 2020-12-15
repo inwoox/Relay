@@ -9,9 +9,9 @@ import taskagile.domain.model.user.User;
 import taskagile.domain.model.user.UserRepository;
 
 @Repository
-public class HibernateUserRepository extends HibernateSupport implements UserRepository {
+public class HibernateUserRepository extends HibernateSupport<User> implements UserRepository {
 
-	// HibernateSupport의 생성자를 호출하여, 엔티티 매니저를 주입 받는다. 
+  // HibernateSupport의 생성자를 호출하여, 엔티티 매니저를 주입 받는다.
   public HibernateUserRepository(EntityManager entityManager) {
     super(entityManager);
   }
@@ -33,7 +33,7 @@ public class HibernateUserRepository extends HibernateSupport implements UserRep
 
   @Override
   public void save(User user) {
-    entityManager.persist(user);  // 엔티티 저장
-    entityManager.flush();				// 영속성 컨텍스트 내용을 데이터베이스에 반영
+    entityManager.persist(user); // 엔티티 저장
+    entityManager.flush(); // 영속성 컨텍스트 내용을 데이터베이스에 반영
   }
 }

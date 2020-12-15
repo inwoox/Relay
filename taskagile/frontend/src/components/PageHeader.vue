@@ -54,6 +54,7 @@ export default {
     ...mapGetters(['user', 'hasBoards', 'personalBoards', 'teamBoards'])
   },
   created () { // 이 컴포넌트가 생성되면, API를 호출하여 내 유저 데이터를 받아온다.
+    console.log('created')
     this.$store.dispatch('getMyData')
   },
   methods: {

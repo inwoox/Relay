@@ -16,6 +16,10 @@ import taskagile.domain.common.security.PasswordEncryptor;
 // 컨트롤러가 실체 구현체(UserServiceImpl)를 직접 참조하는 것을 원하지 않기 때문이다. 직접 참조하면 구현체에 대한 확장성이 떨어진다.
 // RegistrationManagement 같은 도메인 서비스는 애플리케이션 코어에서 경계를 선언할 필요가 없다.
 
+
+// 이런 도메인 서비스는 , 도메인 객체에 자연스럽게 어울리지 못하는 비즈니스 로직을 캡슐화한다.
+// 여기서는 PasswordEncryptor의 패스워드 암호화 같은 로직을 같이 담아서 캡슐화한다.
+
 @Component
 public class RegistrationManagement {
 
@@ -27,7 +31,7 @@ public class RegistrationManagement {
     this.passwordEncryptor = passwordEncryptor;
   }
 
-  // 도메인 객체에 자연스럽게 어울리지 못하는 비즈니스 로직
+  
   // 회원가입의 비즈니스 로직 : 이미 존재하는 사용자, 이메일 주소 등록 불가 / 비밀번호 암호화 / 저장소에 사용자 저장
   public User register(String username, String emailAddress, String password) throws RegistrationException {
 	

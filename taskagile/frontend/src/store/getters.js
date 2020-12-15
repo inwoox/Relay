@@ -1,15 +1,14 @@
+export const user = state => state.user
 
-export default {
-  user = state => state.user,
-  hasBoards = state => {
+export const hasBoards = state => {
   return state.boards.length > 0
-  },
-  
-  personalBoards = state => {
-    return state.boards.filter(board => board.teamId === 0)
-  },
+}
 
-  teamBoards = state => {
+export const personalBoards = state => {
+  return state.boards.filter(board => board.teamId === 0)
+}
+
+export const teamBoards = state => {
   const teams = []
 
   state.teams.forEach(team => {
@@ -17,8 +16,8 @@ export default {
       id: team.id,
       name: team.name,
       boards: state.boards.filter(board => board.teamId === team.id)
-      })
     })
-    return teams
-  }
+  })
+
+  return teams
 }

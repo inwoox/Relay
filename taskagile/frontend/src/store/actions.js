@@ -3,16 +3,16 @@
 
 import meService from '@/services/me'
 
-export default {
-  getMyData = ({ commit }) => {
-    meService.getMyData().then(data => {
-      commit('updateMyData', data)
-    })
-  },
-  addTeam = ({commit}, team) => {
-    commit('addTeam', team)
-  },
-  addBoard = ({commit}, board) => {
-    commit('addBoard', board)
-  }
+export const getMyData = ({ commit }) => {
+  meService.getMyData().then(data => {
+    commit('updateMyData', data)
+  })
+}
+
+export const addTeam = ({commit}, team) => {
+  commit('addTeam', team)
+}
+
+export const addBoard = ({commit}, board) => {
+  commit('addBoard', board)
 }

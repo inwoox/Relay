@@ -1,12 +1,12 @@
 package taskagile.infrastructure.repository;
 
-import javax.persistence.EntityManager;
-
+import taskagile.domain.model.user.User;
+import taskagile.domain.model.user.UserId;
+import taskagile.domain.model.user.UserRepository;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
-import taskagile.domain.model.user.User;
-import taskagile.domain.model.user.UserRepository;
+import javax.persistence.EntityManager;
 
 @Repository
 public class HibernateUserRepository extends HibernateSupport<User> implements UserRepository {
@@ -32,8 +32,9 @@ public class HibernateUserRepository extends HibernateSupport<User> implements U
   }
 
   @Override
-  public void save(User user) {
-    entityManager.persist(user); // 엔티티 저장
-    entityManager.flush(); // 영속성 컨텍스트 내용을 데이터베이스에 반영
+  public User findById(UserId userId) {
+    Query<User> query = getSession().createQuery("from User where id = :id", User.class);
+    query.setParameter("id", userId.value());
+    return query.uniqueResult();
   }
 }

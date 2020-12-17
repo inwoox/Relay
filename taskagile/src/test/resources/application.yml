@@ -18,6 +18,8 @@ spring:
       mail:
         smtp:
           auth: false
+
+
           
 
           

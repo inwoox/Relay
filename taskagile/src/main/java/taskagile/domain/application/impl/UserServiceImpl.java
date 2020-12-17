@@ -18,7 +18,7 @@ import taskagile.domain.common.mail.MessageVariable;
 import taskagile.domain.model.user.RegistrationException;
 import taskagile.domain.model.user.RegistrationManagement;
 import taskagile.domain.model.user.SimpleUser;
-import taskagile.domain.model.user.User;
+import taskagile.domain.model.user.*;
 import taskagile.domain.model.user.UserRepository;
 import taskagile.domain.model.user.event.UserRegisteredEvent;
 import taskagile.web.api.authenticate.AuthenticationFilter;
@@ -101,6 +101,11 @@ public class UserServiceImpl implements UserService {
     }
     // UserDetails, Serializable을 구현하는 SimpleUser 인스턴스를, 매개변수로 유저를 가지고 생성하여 반환
     return new SimpleUser(user);
+  }
+
+  @Override
+  public User findById(UserId userId) {
+    return userRepository.findById(userId);
   }
 
   @Override	

@@ -4,7 +4,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import taskagile.domain.application.command.RegistrationCommand;
 import taskagile.domain.model.user.RegistrationException;
-
+import taskagile.domain.model.user.User;
+import taskagile.domain.model.user.UserId;
 
 // *** 인터페이스 ***
 
@@ -31,4 +32,5 @@ import taskagile.domain.model.user.RegistrationException;
 
 public interface UserService extends UserDetailsService {
   void register(RegistrationCommand command) throws RegistrationException;
+  User findById(UserId userId);
 }

@@ -45,6 +45,7 @@ public class ChannelHandlerInvoker {
     this.handler = handler;
   }
 
+  // 액션이 Action 애노테이션에 정의된 액션과 일치하는지 확인
   public boolean supports(String action) {
     return actionMethods.containsKey(action);
   }

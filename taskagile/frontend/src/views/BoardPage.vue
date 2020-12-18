@@ -302,6 +302,8 @@ export default {
         notify.error(error.message)
       })
     },
+
+    // SockJS 객체를 감싸는 RealTimeClient 클래스를 이용해, 특정 보드가 로드될 때, 이 메서드를 호출해 보드를 구독한다.
     subscribeToRealTimUpdate () {
       this.$rt.subscribe('/board/' + this.board.id, this.onRealTimeUpdated)
     },

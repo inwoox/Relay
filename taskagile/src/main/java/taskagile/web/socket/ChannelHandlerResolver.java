@@ -37,6 +37,7 @@ public class ChannelHandlerResolver {
     if (invoker == null) {
       return null;
     }
+    // Action 애노테이션으로 정의한 값과 일치하는 액션이 있으면, invoker를 반환한다.
     return invoker.supports(incomingMessage.getAction()) ? invoker : null;
   }
 

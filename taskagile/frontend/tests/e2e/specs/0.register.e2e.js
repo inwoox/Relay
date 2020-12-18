@@ -51,18 +51,18 @@ module.exports = {
     browser
       .assert.urlEquals(browser.launchUrl + 'register')
       .end()
-  },
-  'register with valid data': function (browser) {
-    const registerPage = browser.page.RegisterPage()
-
-    console.log(user.username, user.emailAddress, user.password)
-    registerPage
-      .navigate()
-      .register(user.username, user.emailAddress, user.password)
-
-    browser.pause(5000)
-    browser
-      .assert.urlEquals(browser.launchUrl + 'login')
-      .end()
   }
+  // 'register with valid data': function (browser) {
+  //   const registerPage = browser.page.RegisterPage()
+
+  //   console.log(user.username, user.emailAddress, user.password)
+  //   registerPage
+  //     .navigate()
+  //     .register(user.username, user.emailAddress, user.password)
+
+  //   browser.pause(5000)
+  //   browser
+  //     .assert.urlEquals(browser.launchUrl + 'login')
+  //     .end()
+  // }
 }

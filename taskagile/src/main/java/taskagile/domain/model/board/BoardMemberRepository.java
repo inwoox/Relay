@@ -1,11 +1,15 @@
 package taskagile.domain.model.board;
 
+import taskagile.domain.model.user.User;
+import taskagile.domain.model.user.UserId;
+
+import java.util.List;
+
 public interface BoardMemberRepository {
 
-  /**
-   * Save board member
-   *
-   * @param boardMember the board member to save
-   */
   void save(BoardMember boardMember);
+
+  void add(BoardId boardId, UserId userId);
+
+  List<User> findMembers(BoardId boardId);
 }

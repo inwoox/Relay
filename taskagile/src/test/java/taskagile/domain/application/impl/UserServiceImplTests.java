@@ -1,34 +1,20 @@
 package taskagile.domain.application.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import taskagile.domain.application.command.RegistrationCommand;
+import taskagile.domain.common.event.DomainEventPublisher;
+import taskagile.domain.common.mail.CustomMailSenderInterface;
+import taskagile.domain.common.mail.MailManager;
+import taskagile.domain.common.mail.MessageVariable;
+import taskagile.domain.model.user.*;
+import taskagile.domain.model.user.event.UserRegisteredEvent;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import taskagile.domain.application.command.RegistrationCommand;
-import taskagile.domain.common.event.DomainEventPublisher;
-import taskagile.domain.common.mail.CustomMailSenderInterface;
-import taskagile.domain.common.mail.MailManager;
-import taskagile.domain.common.mail.MessageVariable;
-import taskagile.domain.model.user.EmailAddressExistsException;
-import taskagile.domain.model.user.RegistrationException;
-import taskagile.domain.model.user.RegistrationManagement;
-import taskagile.domain.model.user.SimpleUser;
-import taskagile.domain.model.user.User;
-import taskagile.domain.model.user.UserRepository;
-import taskagile.domain.model.user.UsernameExistsException;
-import taskagile.domain.model.user.event.UserRegisteredEvent;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class UserServiceImplTests {
 
@@ -36,7 +22,7 @@ public class UserServiceImplTests {
   private DomainEventPublisher domainEventPublisherMock;
   private MailManager mailManagerMock;
   private UserRepository userRepositoryMock;
-  private CustomMailSenderInterface CustomMailMock;
+  private CustomMailSenderInterface customMailMock;
   private UserServiceImpl instance;
 
   @Before
@@ -46,7 +32,7 @@ public class UserServiceImplTests {
     mailManagerMock = mock(MailManager.class);
     userRepositoryMock = mock(UserRepository.class);
     instance = new UserServiceImpl(registrationManagementMock, domainEventPublisherMock,
-      mailManagerMock, userRepositoryMock, CustomMailMock);
+      mailManagerMock, userRepositoryMock, customMailMock);
   }
 
   //-------------------------------------------
@@ -66,6 +52,7 @@ public class UserServiceImplTests {
     verify(userRepositoryMock, never()).findByUsername("");
     verify(userRepositoryMock, never()).findByEmailAddress("");
   }
+
   @Test
   public void loadUserByUsername_notExistUsername_shouldFail() {
     String notExistUsername = "NotExistUsername";
@@ -81,11 +68,12 @@ public class UserServiceImplTests {
     verify(userRepositoryMock).findByUsername(notExistUsername);
     verify(userRepositoryMock, never()).findByEmailAddress(notExistUsername);
   }
+
   @Test
   public void loadUserByUsername_existUsername_shouldSucceed() throws IllegalAccessException {
     String existUsername = "ExistUsername";
-    User foundUser = User.create(existUsername, "user@taskagile.com", "EncryptedPassword!");
-    foundUser.updateName("Test", "User");
+    User foundUser = User.create(existUsername, "user@taskagile.com", "Test", "User",
+      "EncryptedPassword!");
     // Found user from the database should have id. And since no setter of
     // id is available in User, we have to write the value to it using reflection
     //
@@ -126,10 +114,12 @@ public class UserServiceImplTests {
     String username = "existing";
     String emailAddress = "sunny@taskagile.com";
     String password = "MyPassword!";
+    String firstName = "Sunny";
+    String lastName = "Hu";
     doThrow(UsernameExistsException.class).when(registrationManagementMock)
-      .register(username, emailAddress, password);
+      .register(username, emailAddress, firstName, lastName, password);
 
-    RegistrationCommand command = new RegistrationCommand(username, emailAddress, password);
+    RegistrationCommand command = new RegistrationCommand(username, emailAddress, firstName, lastName, password);
     instance.register(command);
   }
 
@@ -138,10 +128,12 @@ public class UserServiceImplTests {
     String username = "sunny";
     String emailAddress = "existing@taskagile.com";
     String password = "MyPassword!";
+    String firstName = "Sunny";
+    String lastName = "Hu";
     doThrow(EmailAddressExistsException.class).when(registrationManagementMock)
-      .register(username, emailAddress, password);
+      .register(username, emailAddress, firstName, lastName, password);
 
-    RegistrationCommand command = new RegistrationCommand(username, emailAddress, password);
+    RegistrationCommand command = new RegistrationCommand(username, emailAddress, firstName, lastName, password);
     instance.register(command);
   }
 
@@ -150,10 +142,12 @@ public class UserServiceImplTests {
     String username = "sunny";
     String emailAddress = "sunny@taskagile.com";
     String password = "MyPassword!";
-    User newUser = User.create(username, emailAddress, password);
-    when(registrationManagementMock.register(username, emailAddress, password))
+    String firstName = "Sunny";
+    String lastName = "Hu";
+    User newUser = User.create(username, emailAddress, firstName, lastName, password);
+    when(registrationManagementMock.register(username, emailAddress, firstName, lastName, password))
       .thenReturn(newUser);
-    RegistrationCommand command = new RegistrationCommand(username, emailAddress, password);
+    RegistrationCommand command = new RegistrationCommand(username, emailAddress, firstName, lastName, password);
 
     instance.register(command);
 
@@ -163,6 +157,6 @@ public class UserServiceImplTests {
       "welcome.ftl",
       MessageVariable.from("user", newUser)
     );
-    verify(domainEventPublisherMock).publish(new UserRegisteredEvent(newUser));
+    verify(domainEventPublisherMock).publish(new UserRegisteredEvent(this, newUser));
   }
 }

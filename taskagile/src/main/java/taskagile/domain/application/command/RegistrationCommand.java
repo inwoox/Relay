@@ -1,4 +1,7 @@
 package taskagile.domain.application.command;
+
+import java.util.Objects;
+
 import org.springframework.util.Assert;
 
 import lombok.Getter;
@@ -7,15 +10,21 @@ import lombok.Getter;
 public class RegistrationCommand {
   private String username;
   private String emailAddress;
+  private String firstName;
+  private String lastName;
   private String password;
 
-  public RegistrationCommand(String username, String emailAddress, String password) {
-    Assert.hasText(username, "Parameter `username` must not be empty");			// username이 빈 값이면, 메시지를 담은 에러를 발생시킨다.
+  public RegistrationCommand(String username, String emailAddress, String firstName, String lastName, String password) {
+    Assert.hasText(username, "Parameter `username` must not be empty");          // 빈 값이면, 에러 발생
     Assert.hasText(emailAddress, "Parameter `emailAddress` must not be empty");
+    Assert.hasText(firstName, "Parameter `firstName` must not be empty");
+    Assert.hasText(lastName, "Parameter `lastName` must not be empty");
     Assert.hasText(password, "Parameter `password` must not be empty");
 
     this.username = username;
     this.emailAddress = emailAddress;
+    this.firstName = firstName;
+    this.lastName = lastName;
     this.password = password;
   }
 
@@ -33,17 +42,23 @@ public class RegistrationCommand {
 
   @Override
   public int hashCode() {
-    int result = username != null ? username.hashCode() : 0;
-    result = 31 * result + (emailAddress != null ? emailAddress.hashCode() : 0);
-    result = 31 * result + (password != null ? password.hashCode() : 0);
-    return result;
+    return Objects.hash(username, emailAddress, firstName, lastName, password);
   }
+  // @Override
+  // public int hashCode() {
+  //   int result = username != null ? username.hashCode() : 0;
+  //   result = 31 * result + (emailAddress != null ? emailAddress.hashCode() : 0);
+  //   result = 31 * result + (password != null ? password.hashCode() : 0);
+  //   return result;
+  // }
 
   @Override
   public String toString() {
     return "RegistrationCommand{" +
       "username='" + username + '\'' +
       ", emailAddress='" + emailAddress + '\'' +
+      ", firstName='" + firstName + '\'' +
+      ", lastName='" + lastName + '\'' +
       ", password='" + password + '\'' +
       '}';
   }

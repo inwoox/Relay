@@ -1,14 +1,15 @@
 package taskagile.infrastructure.repository;
 
 import taskagile.domain.model.team.Team;
+import taskagile.domain.model.team.TeamId;
 import taskagile.domain.model.team.TeamRepository;
 import taskagile.domain.model.user.UserId;
 import org.hibernate.query.NativeQuery;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-
 
 // 보다시피 이 구현체는 findTeamsByUserId 메서드만 구현하고, HibernateSupport로부터 save() 메서드를 상속 받는다
 // save를 따로 구현할 필요가 없다.
@@ -27,5 +28,12 @@ public class HibernateTeamRepository extends HibernateSupport<Team> implements T
     NativeQuery<Team> query = getSession().createNativeQuery(sql, Team.class);
     query.setParameter("userId", userId.value());
     return query.list();
+  }
+
+  @Override
+  public Team findById(TeamId teamId) {
+    Query<Team> query = getSession().createQuery("from Team where id = :id", Team.class);
+    query.setParameter("id", teamId.value());
+    return query.uniqueResult();
   }
 }

@@ -22,11 +22,19 @@ public class RegistrationPayload {  // 세개의 필드를 가진다.
   @NotNull
   private String emailAddress;
 
+  @Size(min = 1, max = 45, message = "First name must be between 1 and 45 characters")
+  @NotNull
+  private String firstName;
+
+  @Size(min = 1, max = 45, message = "Last name must be between 1 and 45 characters")
+  @NotNull
+  private String lastName;
+
   @Size(min = 6, max = 30, message = "Password must be between 6 and 30 characters")
   @NotNull
   private String password;
 
   public RegistrationCommand toCommand() {	// RegistrationPayload에서 받은 값들을 가지고, RegistrationCommand 인스턴스를 생성한다
-    return new RegistrationCommand(this.username, this.emailAddress, this.password);
+    return new RegistrationCommand(this.username, this.emailAddress, this.firstName, this.lastName, this.password);
   }
 }

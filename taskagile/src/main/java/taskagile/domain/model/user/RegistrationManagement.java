@@ -33,7 +33,8 @@ public class RegistrationManagement {
 
   
   // 회원가입의 비즈니스 로직 : 이미 존재하는 사용자, 이메일 주소 등록 불가 / 비밀번호 암호화 / 저장소에 사용자 저장
-  public User register(String username, String emailAddress, String password) throws RegistrationException {
+  public User register(String username, String emailAddress, String firstName, String lastName, String password)
+    throws RegistrationException {
 	
 	// 유저 검색에, 인프라 서비스인 repository에 의존. 같은 사용자명 또는 이메일 주소를 가지는 다른 사용자가 있으면, 에러를 던진다.
 	// 이 에러들은 Exception을 상속한 RegistrationException을 상속하여 구현한다.
@@ -48,7 +49,7 @@ public class RegistrationManagement {
     }
 
     String encryptedPassword = passwordEncryptor.encrypt(password);
-    User newUser = User.create(username, emailAddress.toLowerCase(), encryptedPassword);
+    User newUser = User.create(username, emailAddress.toLowerCase(), firstName, lastName, encryptedPassword);
     repository.save(newUser);
     return newUser;
   }

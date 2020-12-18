@@ -61,6 +61,27 @@
             </div>
           </div>
 
+          <div class="form-group">
+            <label for="firstName">{{ $t('registerPage.form.firstName.label') }}</label>
+            <input type="text" class="form-control" id="firstName" v-model="form.firstName">
+            <div class="field-error" v-if="$v.form.firstName.$dirty">
+              <div class="error" v-if="!$v.form.firstName.required">{{ $t('registerPage.form.firstName.required') }}</div>
+              <div class="error" v-if="!$v.form.firstName.alpha">{{ $t('registerPage.form.firstName.alpha') }}</div>
+              <div class="error" v-if="!$v.form.firstName.minLength">{{ $t('registerPage.form.firstName.minLength', {minLength: $v.form.firstName.$params.minLength.min}) }}</div>
+              <div class="error" v-if="!$v.form.firstName.maxLength">{{ $t('registerPage.form.firstName.maxLength', {maxLength: $v.form.firstName.$params.maxLength.max}) }}</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="lastName">{{ $t('registerPage.form.lastName.label') }}</label>
+            <input type="text" class="form-control" id="lastName" v-model="form.lastName">
+            <div class="field-error" v-if="$v.form.lastName.$dirty">
+              <div class="error" v-if="!$v.form.lastName.required">{{ $t('registerPage.form.lastName.required') }}</div>
+              <div class="error" v-if="!$v.form.lastName.alpha">{{ $t('registerPage.form.lastName.alpha') }}</div>
+              <div class="error" v-if="!$v.form.lastName.minLength">{{ $t('registerPage.form.lastName.minLength', {minLength: $v.form.lastName.$params.minLength.min}) }}</div>
+              <div class="error" v-if="!$v.form.lastName.maxLength">{{ $t('registerPage.form.lastName.maxLength', {maxLength: $v.form.lastName.$params.maxLength.max}) }}</div>
+            </div>
+          </div>
+
           <!-- 패스워드 부분 -->
           <div class="form-group">
             <!-- 패스워드 입력 부분 -->
@@ -98,7 +119,7 @@
 </template>
 
 <script>
-import { required, email, minLength, maxLength, alphaNum } from 'vuelidate/lib/validators'
+import { required, email, minLength, maxLength, alphaNum, alpha } from 'vuelidate/lib/validators'
 import registrationService from '@/services/registration'
 export default {
   name: 'RegisterPage',
@@ -125,6 +146,18 @@ export default {
         required,
         email,
         maxLength: maxLength(100)
+      },
+      firstName: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(45),
+        alpha
+      },
+      lastName: {
+        required,
+        minLength: minLength(1),
+        maxLength: maxLength(45),
+        alpha
       },
       password: {
         required,

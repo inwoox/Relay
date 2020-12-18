@@ -12,6 +12,10 @@ import { faHome, faSearch, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { i18n } from './i18n'
 
+
+import eventBus from './event-bus'
+import realTimeClient from '@/real-time-client'
+
 // Bootstrap axios
 // 모든 요청에 자동으로 /api 경로가 추가되게 한다. / 응답을 JSON 형식으로만 받는다 / 에러를 전파하기 위해 인터셉터를 응답에 추가
 axios.defaults.baseURL = '/api'
@@ -30,6 +34,9 @@ faLibrary.add(faHome, faSearch, faPlus)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false
+
+Vue.prototype.$bus = eventBus
+Vue.prototype.$rt = realTimeClient
 
 new Vue({
   router,

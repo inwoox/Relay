@@ -4,6 +4,7 @@ import taskagile.domain.application.TeamService;
 import taskagile.domain.application.command.CreateTeamCommand;
 import taskagile.domain.common.event.DomainEventPublisher;
 import taskagile.domain.model.team.Team;
+import taskagile.domain.model.team.TeamId;
 import taskagile.domain.model.team.TeamRepository;
 import taskagile.domain.model.team.event.TeamCreatedEvent;
 import taskagile.domain.model.user.UserId;
@@ -48,5 +49,10 @@ public class TeamServiceImpl implements TeamService {
     teamRepository.save(team);                                       // 여기서는 Team 도메인 모델에 있는 create를 사용한다
     domainEventPublisher.publish(new TeamCreatedEvent(this, team));
     return team;
+  }
+
+  @Override
+  public Team findById(TeamId teamId) {
+    return teamRepository.findById(teamId);
   }
 }

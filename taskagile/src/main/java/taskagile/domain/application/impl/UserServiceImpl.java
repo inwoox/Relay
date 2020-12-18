@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
   private DomainEventPublisher domainEventPublisher;      // 인프라 서비스
   private MailManager mailManager;						 					  // 인프라 서비스
   private UserRepository userRepository;        					// 인프라 서비스 - 실제 구현은 인프라 쪽에서 한다.
-  private CustomMailSenderInterface customMail;
+  private CustomMailSenderInterface customMail;           // 인프라 서비스
 
   public UserServiceImpl(RegistrationManagement registrationManagement, DomainEventPublisher domainEventPublisher, 
   		MailManager mailManager, UserRepository userRepository, CustomMailSenderInterface customMail) {
@@ -118,11 +118,16 @@ public class UserServiceImpl implements UserService {
     // 애플리케이션 코어에서는 , 코어의 내부가 외부와 분리될 수 있도록 RegistrationCommand를 사용하지 않는다.
     
     // 도메인 서비스에 의존하여 , 그 안의 인프라서비스를 통해 유저를 등록한다.
-    User newUser = registrationManagement.register(command.getUsername(),command.getEmailAddress(),command.getPassword());
+    User newUser = registrationManagement.register(
+      command.getUsername(),
+      command.getEmailAddress(),
+      command.getFirstName(),
+      command.getLastName(),
+      command.getPassword());
 
     
     sendWelcomeMessage(newUser); 
-    domainEventPublisher.publish(new UserRegisteredEvent(newUser));
+    domainEventPublisher.publish(new UserRegisteredEvent(this, newUser));
     logger.debug("*** User Registered ***");
   }
 

@@ -6,6 +6,8 @@ import taskagile.domain.model.cardlist.CardList;
 import taskagile.domain.model.cardlist.CardListId;
 import taskagile.domain.model.team.Team;
 import taskagile.domain.model.user.User;
+
+import org.slf4j.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -15,15 +17,19 @@ import java.util.Map;
 
 public class BoardResult {
 
+  private static final Logger log = LoggerFactory.getLogger(BoardResult.class);
+
   public static ResponseEntity<ApiResult> build(Team team, Board board, List<User> members,
                                                 List<CardList> cardLists, List<Card> cards) {
     Map<String, Object> boardData = new HashMap<>();
+
     boardData.put("id", board.getId().value());
     boardData.put("name", board.getName());
     boardData.put("personal", board.isPersonal());
 
     List<MemberData> membersData = new ArrayList<>();
     for (User user: members) {
+      log.info(user.getUsername());
       membersData.add(new MemberData(user));
     }
 

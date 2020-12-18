@@ -48,6 +48,10 @@ public class MeApiController {
     User user = userService.findById(currentUser.getUserId());
     List<Team> teams = teamService.findTeamsByUserId(currentUser.getUserId());
     List<Board> boards = boardService.findBoardsByMembership(currentUser.getUserId());
+
+    // 실시간 토큰인 JWT 문자열을 생성한다.
+    // 실시간 클라이언트가 이 토큰을 활용해 연결을 초기화하면, WebSocketHandler 구현체의 afterConnectionEstablished() 메서드에서 요청을 받는다.
+    // 실시간 토큰은 이 API의 응답에 포함되어 클라이언트로 전송된다. 
     String realTimeToken = tokenManager.jwt(user.getId());
     return MyDataResult.build(user, teams, boards, realTimeServerUrl, realTimeToken);
   }

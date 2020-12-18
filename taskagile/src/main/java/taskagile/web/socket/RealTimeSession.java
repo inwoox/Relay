@@ -12,9 +12,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 
-/**
- * A wrapper over {@link WebSocketSession} to add convenient methods
- */
+
+// 몇가지 편리한 메서드를 제공하기 위한 WebSocketSession의 래퍼 클래스
+
 public class RealTimeSession {
 
   private static final Logger log = LoggerFactory.getLogger(RealTimeSession.class);

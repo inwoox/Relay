@@ -26,9 +26,15 @@ export default new Router({
     name: 'HomePage',
     component: HomePage
   },
+  // 두 경로 모두 동작하게 하기 위해 BoardPage를 리팩토링한다.
   {
     path: '/board/:boardId',
     name: 'board',
+    component: BoardPage
+  },
+  {
+    path: '/card/:cardId/:cardTitle',
+    name: 'card',
     component: BoardPage
   }]
 })

@@ -66,6 +66,12 @@
     <AddMemberModal
       :boardId="board.id"
       @added="onMemberAdded"/>
+    <CardModal
+    :card="openedCard"
+    :cardList="focusedCardList"
+    :board="board"
+    :members="members"
+    @coverImageChanged="updateCardCoverImage"/>
   </div>
 </template>
 
@@ -74,6 +80,7 @@ import draggable from 'vuedraggable'
 import $ from 'jquery'
 import PageHeader from '@/components/PageHeader.vue'
 import AddMemberModal from '@/modals/AddMemberModal.vue'
+import CardModal from '@/modals/CardModal.vue'
 import notify from '@/utils/notify'
 import boardService from '@/services/boards'
 import cardListService from '@/services/card-lists'
@@ -98,68 +105,156 @@ export default {
     AddMemberModal,
     draggable
   },
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.loadBoard()
-    })
-  },
-  beforeRouteUpdate (to, from, next) {
-    next()
-    this.unsubscribeFromRealTimeUpdate()
-    this.loadBoard()
+  // 보드의 로딩 뿐만 아니라 실시간 업데이트 채널로부터 구독 해지를 발생시키기 위해,
+  // vue-router의 다음 네비게이션 가드에 의존했었지만,
+
+  // beforeRouteEnter (to, from, next) {     // 이 컴포넌트를 렌더링하는 라우트 앞에 호출
+  //   next(vm => {
+  //     vm.loadBoard()
+  //   })
+  // },
+  // beforeRouteUpdate (to, from, next) {    // 이 컴포넌트를 렌더링하는 라우트가 업데이트될 때 호출
+  //   next()
+  //   this.unsubscribeFromRealTimeUpdate()
+  //   this.loadBoard()
+  // },
+  // beforeRouteLeave (to, from, next) {     // 이 컴포넌트를 렌더링하는 라우트가 이전으로 네비게이션될 때 호출
+  //   next()
+  //   this.unsubscribeFromRealTimeUpdate()
+  // },
+
+  // 지금은 보드 URL로 페이지를 열고나서, 카드를 열고 닫은 다음 다른 카드로 이동하거나, 
+  // 카드 URL로 페이지를 열고 맨 위에 있는 Boards 메뉴를 활용해 다른 보드로 이동해도 보드 URL과 카드 URL 두 경로를
+  // BoardPage 컴포넌트로 매핑하기 때문에, vue-router 라이브러리가 beforeRouteUpdate 가드를 호출하지 않는다.
+
+  // vue-router 문서에 따르면, beforeRouteUpdate 가드는 /board/1에서 /board/2로 이동할 경우 호출되지만
+  // /board/1에서 /card/1/card-title1로 이동할 경우에는 호출되지 않는다.
+  // 그러므로 BoardPage 페이지에 머물 때 경로의 변경사항을 감지하기 위해서는 네비게이션 가드에 의존할 수 없으며,
+  // 경로의 변경 사항을 감지하기 위해 다음과 같이 this.$route 객체를 지켜봐야한다. 
+
+  // 보다시피 to.name과 from.name을 활용해 보드 간의 전환, 카드 열기, 카드 닫기라는 세 개의 시나리오를 감지
+  // 와처를 활용하면 beforeRouteEnter, beforeRouteUpdate 네비게이션 가드가 필요 없다.
+  // beforeRouteLeave 가드는 보드 페이지에서 나가는 것을 감지하기 위해 여전히 필요, 이것은 $route로는 감지할 수 없다.
+  watch: {
+    '$route' (to, from) {
+      // Switch from one board to another
+      if (to.name === from.name && to.name === 'board') {
+        this.unsubscribeFromRealTimeUpdate(from.params.boardId)
+        this.loadBoard(to.params.boardId)
+      }
+      // Open a card
+      if (to.name === 'card' && from.name === 'board') {
+        this.loadCard(to.params.cardId).then(() => {
+          this.openCardWindow()
+        })
+      }
+      // Close a card
+      if (to.name === 'board' && from.name === 'card') {
+        this.closeCardWindow()
+        this.openedCard = {}
+      }
+    }
   },
   beforeRouteLeave (to, from, next) {
+    console.log('[BoardPage] Before route leave')
     next()
-    this.unsubscribeFromRealTimeUpdate()
+    if (to.name !== 'card') {
+      this.unsubscribeFromRealTimeUpdate(this.board.id)
+    }
   },
+
+  // BoardPage 컴포넌트 인스턴스의 mounted 훅에서 사용자가 
+  // 보드 URL 또는 카드 URL을 바로 열 경우 또는 페이지를 새로 고칠 경우, 보드 페이지의 데이터 로딩을 시작해야한다.
+  // 이를 위해 아래와 같이 리팩토링한다.
+  // mounted () {
+  //   this.$el.addEventListener('click', this.dismissActiveForms)
+  // },
   mounted () {
+    console.log('[BoardPage] Mouted')
+    
+    // BoardPage가 마운트 됐을 때, 서버로부터 데이터를 로드하기 위해 loadInitial() 메서드를 호출한다.
+    this.loadInitial() 
     this.$el.addEventListener('click', this.dismissActiveForms)
+    
+    // 카드 모달창을 닫으면 보드 URL로 변경하기 위해 이벤트를 바인드한다. 
+    $('#cardModal').on('hide.bs.modal', () => {
+      this.$router.push({name: 'board', params: {boardId: this.board.id}})
+    })
   },
   beforeDestroy () {
     this.$el.removeEventListener('click', this.dismissActiveForms)
   },
   methods: {
-    loadBoard () {
-      console.log('[BoardPage] Loading board')
-      boardService.getBoard(this.$route.params.boardId).then(data => {
-        this.team.name = data.team ? data.team.name : ''
-        this.board.id = data.board.id
-        this.board.personal = data.board.personal
-        this.board.name = data.board.name
-
-        this.members.splice(0)
-
-        data.members.forEach(member => {
-          this.members.push({
-            id: member.userId,
-            shortName: member.shortName
-          })
+    loadInitial () {
+      // The board page can be opened through a card URL.
+      if (this.$route.params.cardId) {
+        console.log('[BoardPage] Opened with card URL')
+        this.loadCard(this.$route.params.cardId).then(card => {
+          return this.loadBoard(card.boardId)
+        }).then(() => {
+          this.openCardWindow()
         })
-
-        this.cardLists.splice(0)
-
-        data.cardLists.sort((list1, list2) => {
-          return list1.position - list2.position
+      } else {
+        console.log('[BoardPage] Opened with board URL')
+        this.loadBoard(this.$route.params.boardId)
+      }
+    },
+    loadCard (cardId) {
+      return new Promise(resolve => {
+        console.log('[BoardPage] Loading card ' + cardId)
+        cardService.getCard(cardId).then(card => {
+          this.openedCard = card
+          resolve(card)
+        }).catch(error => {
+          notify.error(error.message)
         })
+      })
+    },
+    loadBoard (boardId) {
+      return new Promise(resolve => {
+        console.log('[BoardPage] Loading board ' + boardId)
+        boardService.getBoard(boardId).then(data => {
+          this.team.name = data.team ? data.team.name : ''
+          this.board.id = data.board.id
+          this.board.personal = data.board.personal
+          this.board.name = data.board.name
 
-        data.cardLists.forEach(cardList => {
-          cardList.cards.sort((card1, card2) => {
-            return card1.position - card2.position
+          this.members.splice(0)
+
+          data.members.forEach(member => {
+            this.members.push({
+              id: member.userId,
+              name: member.name,
+              shortName: member.shortName
+            })
           })
 
-          this.cardLists.push({
-            id: cardList.id,
-            name: cardList.name,
-            cards: cardList.cards,
-            cardForm: {
-              open: false,
-              title: ''
-            }
+          this.cardLists.splice(0)
+
+          data.cardLists.sort((list1, list2) => {
+            return list1.position - list2.position
           })
+
+          data.cardLists.forEach(cardList => {
+            cardList.cards.sort((card1, card2) => {
+              return card1.position - card2.position
+            })
+
+            this.cardLists.push({
+              id: cardList.id,
+              name: cardList.name,
+              cards: cardList.cards,
+              cardForm: {
+                open: false,
+                title: ''
+              }
+            })
+          })
+          this.subscribeToRealTimUpdate(data.board.id)
+          resolve()
+        }).catch(error => {
+          notify.error(error.message)
         })
-        this.subscribeToRealTimUpdate()
-      }).catch(error => {
-        notify.error(error.message)
       })
     },
     dismissActiveForms (event) {

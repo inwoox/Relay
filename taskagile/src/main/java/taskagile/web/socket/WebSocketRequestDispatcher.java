@@ -57,12 +57,17 @@ public class WebSocketRequestDispatcher extends TextWebSocketHandler {
       return;
     }
 
-    // Action 애노테이션으로 정의한 값과 일치하는 액션이 있으면, invoker를 반환하고,
-    // 그에 맞는 채널 핸들러의 메서드를 통해 메시지를 처리한다. 
+    // Action 애노테이션으로 정의한 값과 일치하는 액션이 있으면, invoker를 반환
+    // 즉, ChannelHandlerResolver에게 특정 채널로 전송되는 메시지를 처리하기 위해, 등록된 채널 핸들러를 찾아달라고 요청
+
+    // 채널 핸들러의 위치가 파악되면, 메시지를 처리하기로 되어있는 보드 채널 핸들러의 지정된 액션 메서드를 호출하기 위해
+    // 그에 대응하는 ChannelHandlerInvoker를 사용한다.
     ChannelHandlerInvoker invoker = channelHandlerResolver.findInvoker(incomingMessage);
     if (invoker == null) {
       String errorMessage = "No handler found for action `" + incomingMessage.getAction() +
         "` at channel `" + incomingMessage.getChannel() + "`";
+
+      // 채널 핸들러 또는 액션 메서드를 찾지 못하면, 서버는 클라이언트에게 에러를 전달한다.
       session.error(errorMessage);
       log.error("RealTimeSession[{}] {}", session.id(), errorMessage);
       return;

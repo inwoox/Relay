@@ -31,6 +31,10 @@
                   <span class="btn btn-link btn-cancel" @click="cancelEditDescription">Cancel</span>
                   <span class="format-support float-right">Support Markdown</span>
                 </form>
+                <!-- descriptionHtml에서 markdownConverter.makeHtml(this.description)를 리턴 -->
+                <!-- descriptionHtml이라는 계산된 프로퍼티를 통해, 카드 설명을 변환된 HTML로 만든다 -->
+                <!-- 변환된 HTML 코드를 .description 요소에 바인드 하기위해 v-html을 활용한다 -->
+                <!-- 결론적으로 변환된 HTML을 데이터베이스에 저장할 필요가 없도록, 마크다운 형식으로 작성된 카드 설명을 실시간으로 HTML로 변환한다 -->
                 <div class="description" v-show="description && !editingDescription" v-html="descriptionHtml"></div>
               </div>
             </div>
@@ -109,11 +113,14 @@ import { formatDistance } from 'date-fns'
 
 // 자동 크기 조절을 위해 작고 독립적이며 활용하기 쉬운 autosize를 활용한다. (autosize 설치 및 참조)
 import autosize from 'autosize'
+
+// 마크다운 형식으로 작성된 카드 설명을 실시간으로 HTML로 변환하기 위해 쇼다운 라이브러리를 사용한다.
 import showdown from 'showdown'
 import notify from '@/utils/notify'
 import cardService from '@/services/cards'
 import Uploader from '@/components/Uploader'
 
+// 쇼다운 설정 및 컨버터 인스턴스 생성
 showdown.setOption('strikethrough', true)
 showdown.setOption('tables', true)
 const markdownConverter = new showdown.Converter()
@@ -136,6 +143,7 @@ export default {
     }
   },
   computed: {
+    // descriptionHtml이라는 계산된 프로퍼티를 통해, 마크다운 형식으로 작성된 카드 설명을 변환된 HTML로 만든다
     descriptionHtml () {
       if (!this.description) {
         return ''

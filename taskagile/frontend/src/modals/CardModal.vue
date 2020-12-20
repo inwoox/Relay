@@ -5,6 +5,7 @@
         <div class="modal-header">
           <font-awesome-icon icon="window-maximize" class="card-title-icon" />
           <h4 class="modal-title">
+            <!-- textarea에 auto-size 클래스 추가 -->
             <textarea id="cardTitle" class="auto-size" v-model="title" @keydown.enter.prevent="changeCardTitle"></textarea>
             <div class="meta-card-list">in list {{ cardList.name }}</div>
           </h4>
@@ -105,6 +106,8 @@
 <script>
 import $ from 'jquery'
 import { formatDistance } from 'date-fns'
+
+// 자동 크기 조절을 위해 작고 독립적이며 활용하기 쉬운 autosize를 활용한다. (autosize 설치 및 참조)
 import autosize from 'autosize'
 import showdown from 'showdown'
 import notify from '@/utils/notify'
@@ -202,10 +205,12 @@ export default {
     }
   },
   mounted () {
+    // mounted 훅에 있는 setTimeout 콜백에서 autosize() 메서드를 호출해, 모든 .auto-size 요소의 자동 크기 조절 기능을 초기화
     setTimeout(() => {
       autosize($('.auto-size'))
     }, 0)
 
+    // 카드 모달 창이 열리면, textarea의 높이를 필요한 크기로 조절하기 위해, autosize.update() 메서드를 호출한다.
     $('#cardModal').on('show.bs.modal', () => {
       setTimeout(() => {
         autosize.update($('.auto-size'))

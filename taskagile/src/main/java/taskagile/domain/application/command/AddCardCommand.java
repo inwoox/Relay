@@ -1,28 +1,21 @@
 package taskagile.domain.application.command;
 
 import taskagile.domain.model.cardlist.CardListId;
-import taskagile.domain.model.user.UserId;
 
-public class AddCardCommand {
+public class AddCardCommand extends UserCommand {
 
   private CardListId cardListId;
-  private UserId userId;
   private String title;
   private int position;
 
-  public AddCardCommand(CardListId cardListId, UserId userId, String title, int position) {
+  public AddCardCommand(CardListId cardListId, String title, int position) {
     this.cardListId = cardListId;
-    this.userId = userId;
     this.title = title;
     this.position = position;
   }
 
   public CardListId getCardListId() {
     return cardListId;
-  }
-
-  public UserId getUserId() {
-    return userId;
   }
 
   public String getTitle() {

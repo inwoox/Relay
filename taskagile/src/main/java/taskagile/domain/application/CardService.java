@@ -1,34 +1,34 @@
 package taskagile.domain.application;
 
-import taskagile.domain.application.command.AddCardCommand;
-import taskagile.domain.application.command.ChangeCardPositionsCommand;
+import taskagile.domain.application.command.*;
+import taskagile.domain.model.activity.Activity;
+import taskagile.domain.model.attachment.Attachment;
 import taskagile.domain.model.board.BoardId;
 import taskagile.domain.model.card.Card;
+import taskagile.domain.model.card.CardId;
 
 import java.util.List;
 
 public interface CardService {
 
-  /**
-   * Find all the cards of a board
-   *
-   * @param boardId the id of the board
-   * @return a list of card instances or an empty list if none found
-   */
   List<Card> findByBoardId(BoardId boardId);
 
-  /**
-   * Add card
-   *
-   * @param command the command instance
-   * @return the newly added card
-   */
+  Card findById(CardId cardId);
+
+  List<Activity> findCardActivities(CardId cardId);
+
+  List<Attachment> getAttachments(CardId cardId);
+
   Card addCard(AddCardCommand command);
 
-  /**
-   * Change card positions
-   *
-   * @param command the command instance
-   */
   void changePositions(ChangeCardPositionsCommand command);
+
+  void changeCardTitle(ChangeCardTitleCommand command);
+
+  void changeCardDescription(ChangeCardDescriptionCommand command);
+
+  Activity addComment(AddCardCommentCommand command);
+
+  Attachment addAttachment(AddCardAttachmentCommand command);
+
 }

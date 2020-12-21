@@ -1,6 +1,7 @@
 package taskagile.domain.application.impl;
 
 import taskagile.domain.application.BoardService;
+import taskagile.domain.application.command.AddBoardMemberCommand;
 import taskagile.domain.application.command.CreateBoardCommand;
 import taskagile.domain.common.event.DomainEventPublisher;
 import taskagile.domain.model.board.*;
@@ -47,7 +48,7 @@ public class BoardServiceImpl implements BoardService {
   public Board createBoard(CreateBoardCommand command) { 
     Board board = boardManagement.createBoard(command.getUserId(), command.getName(), command.getDescription(),
         command.getTeamId());
-    domainEventPublisher.publish(new BoardCreatedEvent(this, board));
+    domainEventPublisher.publish(new BoardCreatedEvent(board, command));
     return board;
   }
 
@@ -62,10 +63,10 @@ public class BoardServiceImpl implements BoardService {
   }
 
   @Override
-  public User addMember(BoardId boardId, String usernameOrEmailAddress) throws UserNotFoundException {
-    User user = userFinder.find(usernameOrEmailAddress);
-    boardMemberRepository.add(boardId, user.getId());
-    domainEventPublisher.publish(new BoardMemberAddedEvent(this, boardId, user));
+  public User addMember(AddBoardMemberCommand command) throws UserNotFoundException {
+    User user = userFinder.find(command.getUsernameOrEmailAddress());
+    boardMemberRepository.add(command.getBoardId(), user.getId());
+    domainEventPublisher.publish(new BoardMemberAddedEvent(command.getBoardId(), user, command));
     return user;
   }
 }

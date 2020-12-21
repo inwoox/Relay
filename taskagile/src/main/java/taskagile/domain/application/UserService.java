@@ -2,7 +2,7 @@ package taskagile.domain.application;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import taskagile.domain.application.command.RegistrationCommand;
+import taskagile.domain.application.command.RegisterCommand;
 import taskagile.domain.model.user.RegistrationException;
 import taskagile.domain.model.user.User;
 import taskagile.domain.model.user.UserId;
@@ -31,6 +31,6 @@ import taskagile.domain.model.user.UserId;
 // 사용자의 정보를 담는 인터페이스
 
 public interface UserService extends UserDetailsService {
-  void register(RegistrationCommand command) throws RegistrationException;
+  void register(RegisterCommand command) throws RegistrationException;
   User findById(UserId userId);
 }

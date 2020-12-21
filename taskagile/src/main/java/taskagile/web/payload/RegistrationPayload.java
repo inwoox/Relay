@@ -6,11 +6,11 @@ import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
-import taskagile.domain.application.command.RegistrationCommand;
+import taskagile.domain.application.command.RegisterCommand;
 
 @Getter
 @Setter
-public class RegistrationPayload {  // 세개의 필드를 가진다. 
+public class RegistrationPayload {  
 
   // Size 어노테이션은 null 값을 유효한 값으로 간주한다. 때문에 @NotNull 어노테이션을 각 필드에 추가한다.
   @Size(min = 2, max = 50, message = "Username must be between 2 and 50 characters")
@@ -34,7 +34,7 @@ public class RegistrationPayload {  // 세개의 필드를 가진다.
   @NotNull
   private String password;
 
-  public RegistrationCommand toCommand() {	// RegistrationPayload에서 받은 값들을 가지고, RegistrationCommand 인스턴스를 생성한다
-    return new RegistrationCommand(this.username, this.emailAddress, this.firstName, this.lastName, this.password);
+  public RegisterCommand toCommand() {	// RegistrationPayload에서 받은 값들을 가지고, RegistrationCommand 인스턴스를 생성한다
+    return new RegisterCommand(this.username, this.emailAddress, this.firstName, this.lastName, this.password);
   }
 }

@@ -2,6 +2,7 @@ package taskagile.infrastructure.repository;
 
 import taskagile.domain.model.board.BoardId;
 import taskagile.domain.model.card.Card;
+import taskagile.domain.model.card.CardId;
 import taskagile.domain.model.card.CardPosition;
 import taskagile.domain.model.card.CardRepository;
 import org.hibernate.query.NativeQuery;
@@ -22,6 +23,11 @@ public class HibernateCardRepository extends HibernateSupport<Card> implements C
   HibernateCardRepository(EntityManager entityManager, JdbcTemplate jdbcTemplate) {
     super(entityManager);
     this.jdbcTemplate = jdbcTemplate;
+  }
+
+  @Override
+  public Card findById(CardId cardId) {
+    return getSession().find(Card.class, cardId.value());
   }
 
   @Override

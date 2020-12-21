@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import taskagile.domain.application.UserService;
-import taskagile.domain.application.command.RegistrationCommand;
+import taskagile.domain.application.command.RegisterCommand;
 import taskagile.domain.common.event.DomainEventPublisher;
 import taskagile.domain.common.mail.CustomMailSenderInterface;
 import taskagile.domain.common.mail.MailManager;
@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override	
-  public void register(RegistrationCommand command) throws RegistrationException {
+  public void register(RegisterCommand command) throws RegistrationException {
  
   	// command가 null이면, Assert.notNull() 메서드가 IllegalArgumentException 에러를 던진다. (notNull - 널이 아니어야한다라는 검사 구문)
     Assert.notNull(command, "Parameter `command` must not be null"); 
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
 
     
     sendWelcomeMessage(newUser); 
-    domainEventPublisher.publish(new UserRegisteredEvent(this, newUser));
+    domainEventPublisher.publish(new UserRegisteredEvent(newUser, command));
     logger.debug("*** User Registered ***");
   }
 

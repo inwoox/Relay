@@ -6,6 +6,7 @@ import taskagile.domain.model.board.BoardId;
 import taskagile.domain.model.user.User;
 import taskagile.domain.model.user.UserId;
 import taskagile.domain.model.user.UserNotFoundException;
+import taskagile.domain.application.command.AddBoardMemberCommand;
 
 import java.util.List;
 
@@ -14,5 +15,5 @@ public interface BoardService {
   Board createBoard(CreateBoardCommand command);
   Board findById(BoardId boardId);
   List<User> findMembers(BoardId boardId);
-  User addMember(BoardId boardId, String usernameOrEmailAddress) throws UserNotFoundException;
+  User addMember(AddBoardMemberCommand command) throws UserNotFoundException;
 }

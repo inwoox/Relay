@@ -47,7 +47,7 @@ public class TeamServiceImpl implements TeamService {
   public Team createTeam(CreateTeamCommand command) {
     Team team = Team.create(command.getName(), command.getUserId()); // 팀 생성, 저장, 생성 이벤트 발행
     teamRepository.save(team);                                       // 여기서는 Team 도메인 모델에 있는 create를 사용한다
-    domainEventPublisher.publish(new TeamCreatedEvent(this, team));
+    domainEventPublisher.publish(new TeamCreatedEvent(team, command));
     return team;
   }
 

@@ -100,6 +100,11 @@ export default {
       }
     }
   },
+  computed: {
+    focusedCardList () {
+      return this.cardLists.filter(cardList => cardList.id === this.openedCard.cardListId)[0] || {}
+    }
+  },
   components: {
     PageHeader,
     AddMemberModal,

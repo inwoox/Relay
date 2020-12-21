@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
-public class TeamApiController {
+public class TeamApiController extends AbstractBaseController {
 
   private static final Logger log = LoggerFactory.getLogger(MeApiController.class);
 

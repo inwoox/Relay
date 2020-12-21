@@ -1,9 +1,9 @@
 package taskagile.web.api;
 
 import taskagile.domain.application.CardListService;
-import taskagile.domain.common.security.CurrentUser;
+import taskagile.domain.application.command.AddCardListCommand;
+import taskagile.domain.application.command.ChangeCardListPositionsCommand;
 import taskagile.domain.model.cardlist.CardList;
-import taskagile.domain.model.user.SimpleUser;
 import taskagile.web.payload.AddCardListPayload;
 import taskagile.web.payload.ChangeCardListPositionsPayload;
 import taskagile.web.result.AddCardListResult;
@@ -14,8 +14,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
-public class CardListApiController {
+public class CardListApiController extends AbstractBaseController {
 
   private CardListService cardListService;
 
@@ -25,14 +27,21 @@ public class CardListApiController {
 
   @PostMapping("/api/card-lists")
   public ResponseEntity<ApiResult> addCardList(@RequestBody AddCardListPayload payload,
-                                               @CurrentUser SimpleUser currentUser) {
-    CardList cardList = cardListService.addCardList(payload.toCommand(currentUser.getUserId()));
+                                               HttpServletRequest request) {
+    AddCardListCommand command = payload.toCommand();
+    addTriggeredBy(command, request);
+
+    CardList cardList = cardListService.addCardList(command);
     return AddCardListResult.build(cardList);
   }
 
   @PostMapping("/api/card-lists/positions")
-  public ResponseEntity<ApiResult> changeCardListPositions(@RequestBody ChangeCardListPositionsPayload payload) {
-    cardListService.changePositions(payload.toCommand());
+  public ResponseEntity<ApiResult> changeCardListPositions(@RequestBody ChangeCardListPositionsPayload payload,
+                                                           HttpServletRequest request) {
+    ChangeCardListPositionsCommand command = payload.toCommand();
+    addTriggeredBy(command, request);
+
+    cardListService.changePositions(command);
     return Result.ok();
   }
 }

@@ -1,22 +1,23 @@
 package taskagile.web.api;
 
-import javax.validation.Valid;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import taskagile.domain.application.UserService;
+import taskagile.domain.application.command.RegisterCommand;
 import taskagile.domain.model.user.EmailAddressExistsException;
 import taskagile.domain.model.user.RegistrationException;
 import taskagile.domain.model.user.UsernameExistsException;
 import taskagile.web.payload.RegistrationPayload;
 import taskagile.web.result.ApiResult;
 import taskagile.web.result.Result;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @Controller
-public class RegistrationApiController {
+public class RegistrationApiController extends AbstractBaseController {
 
   private UserService service;
   public RegistrationApiController(UserService service) {
@@ -26,9 +27,11 @@ public class RegistrationApiController {
   // @Valid 어노테이션을 통해 이 메서드에 페이로드를 전달하기 전에, 페이로드의 입력 값 유효성을 검증한다
   // @RequestBody 어노테이션을 통해 POST 요청의 페이로드를 받아, RegistrationPayload 객체를 만든다. 
   @PostMapping("/api/registrations") 
-  public ResponseEntity<ApiResult> register(@Valid @RequestBody RegistrationPayload payload) {
+  public ResponseEntity<ApiResult> register(@Valid @RequestBody RegistrationPayload payload, HttpServletRequest request) {
     try {
-      service.register(payload.toCommand()); // 핸들러에서는 RegistrationPayload 인스턴스를 RegistrationCommand 클래스로 변환한뒤, service의 register API를 호출
+      RegisterCommand command = payload.toCommand();
+      addTriggeredBy(command, request);
+      service.register(command);
       return Result.created();				 // created() 메서드를 호출해 201 응답을 반환
     } 
     

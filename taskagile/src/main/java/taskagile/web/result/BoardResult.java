@@ -1,13 +1,16 @@
 package taskagile.web.result;
 
+import taskagile.domain.common.file.FileUrlCreator;
 import taskagile.domain.model.board.Board;
 import taskagile.domain.model.card.Card;
 import taskagile.domain.model.cardlist.CardList;
 import taskagile.domain.model.cardlist.CardListId;
 import taskagile.domain.model.team.Team;
 import taskagile.domain.model.user.User;
+import taskagile.utils.ImageUtils;
 
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -15,12 +18,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.Getter;
+
 public class BoardResult {
 
   private static final Logger log = LoggerFactory.getLogger(BoardResult.class);
 
   public static ResponseEntity<ApiResult> build(Team team, Board board, List<User> members,
-                                                List<CardList> cardLists, List<Card> cards) {
+                                                List<CardList> cardLists, List<Card> cards,
+                                                FileUrlCreator fileUrlCreator) {
     Map<String, Object> boardData = new HashMap<>();
 
     boardData.put("id", board.getId().value());
@@ -40,7 +46,7 @@ public class BoardResult {
     }
 
     for (CardList cardList: cardLists) {
-      cardListsData.add(new CardListData(cardList, cardsByList.get(cardList.getId())));
+      cardListsData.add(new CardListData(cardList, cardsByList.get(cardList.getId()), fileUrlCreator));
     }
 
     ApiResult result = ApiResult.blank()
@@ -56,79 +62,51 @@ public class BoardResult {
     return Result.ok(result);
   }
 
+  @Getter
   private static class MemberData {
     private long userId;
     private String shortName;
+    private String name;
 
     MemberData(User user) {
       this.userId = user.getId().value();
       this.shortName = user.getInitials();
-    }
-
-    public long getUserId() {
-      return userId;
-    }
-
-    public String getShortName() {
-      return shortName;
+      this.name = user.getFirstName() + " " + user.getLastName();
     }
   }
 
+  @Getter
   private static class CardListData {
     private long id;
     private String name;
     private int position;
     private List<CardData> cards = new ArrayList<>();
 
-    CardListData(CardList cardList, List<Card> cards) {
+    CardListData(CardList cardList, List<Card> cards, FileUrlCreator fileUrlCreator) {
       this.id = cardList.getId().value();
       this.name = cardList.getName();
       this.position = cardList.getPosition();
       if (cards != null) {
         for (Card card: cards) {
-          this.cards.add(new CardData(card));
+          this.cards.add(new CardData(card, fileUrlCreator));
         }
       }
     }
-
-    public long getId() {
-      return id;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public int getPosition() {
-      return position;
-    }
-
-    public List<CardData> getCards() {
-      return cards;
-    }
   }
 
+  @Getter
   private static class CardData {
     private long id;
     private String title;
     private int position;
+    private String coverImage;
 
-    CardData(Card card) {
+    CardData(Card card, FileUrlCreator fileUrlCreator) {
       this.id = card.getId().value();
       this.title = card.getTitle();
       this.position = card.getPosition();
-    }
-
-    public long getId() {
-      return id;
-    }
-
-    public String getTitle() {
-      return title;
-    }
-
-    public int getPosition() {
-      return position;
+      this.coverImage = card.hasCoverImage() ?
+        ImageUtils.getThumbnailVersion(fileUrlCreator.url(card.getCoverImage())) : "";
     }
   }
 

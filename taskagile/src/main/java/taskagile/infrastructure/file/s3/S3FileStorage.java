@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
+// FileStorage 인터페이스를 구현하는 AbstractBaseFileStorage를 상속하는 FileStorage 구현체 클래스
 @Component("s3FileStorage")
 public class S3FileStorage extends AbstractBaseFileStorage {
 

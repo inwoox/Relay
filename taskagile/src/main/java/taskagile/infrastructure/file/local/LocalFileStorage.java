@@ -13,6 +13,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+
+// FileStorage 인터페이스를 구현하는 AbstractBaseFileStorage를 상속하는 FileStorage 구현체 클래스
 @Component("localFileStorage")
 public class LocalFileStorage extends AbstractBaseFileStorage {
 

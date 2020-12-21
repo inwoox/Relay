@@ -14,6 +14,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.UUID;
 
+// 이 추상 클래스가 FileStorage 인터페이스를 구현하고, 이 클래스를 인프라 영역의 FileStorage 구현체 클래스들이 상속한다.
 public abstract class AbstractBaseFileStorage implements FileStorage {
 
   private static final Logger log = LoggerFactory.getLogger(AbstractBaseFileStorage.class);

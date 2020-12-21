@@ -88,6 +88,7 @@
             <h5>Add to Card</h5>
             <div class="control"><font-awesome-icon icon="user" class="icon" /> Members</div>
             <div class="control">
+              <!-- 업로드 컴포넌트는 이런 형태로 사용한다 -->
               <uploader
                 id="cardAttachment"
                 :url="attachmentUploadUrl"

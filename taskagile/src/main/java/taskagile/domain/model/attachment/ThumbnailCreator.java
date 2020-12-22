@@ -36,16 +36,13 @@ public class ThumbnailCreator {
     this.imageProcessor = imageProcessor;
   }
 
-  /**
-   * Create a thumbnail file and save to the storage
-   *
-   * @param fileStorage file storage
-   * @param tempImageFile a temp image file
-   */
   public void create(FileStorage fileStorage, TempFile tempImageFile) {
+    
+    // 메서드의 시작점에서 소스파일인 tempImageFile이 서버에 존재하는지 확인하기 위해 어설션을 활용
     Assert.isTrue(tempImageFile.getFile().exists(), "Image file `" +
       tempImageFile.getFile().getAbsolutePath() + "` must exist");
 
+    // 이미지의 확장자를 확인하여, 섬네일 생성이 가능한 이미지인지 확인
     String ext = FilenameUtils.getExtension(tempImageFile.getFile().getName());
     if (!SUPPORTED_EXTENSIONS.contains(ext)) {
       throw new ThumbnailCreationException("Not supported image format for creating thumbnail");
@@ -58,12 +55,19 @@ public class ThumbnailCreator {
       if (!sourceFilePath.endsWith("." + ext)) {
         throw new IllegalArgumentException("Image file's ext doesn't match the one in file descriptor");
       }
+      // 파일의 경로가 image.jpg일 경우 , 섬네일 파일의 경로를 image.thumbnail.jpg로 만든다.
       String tempThumbnailFilePath = ImageUtils.getThumbnailVersion(tempImageFile.getFile().getAbsolutePath());
+
+      // 생성할 섬네일의 크기를 가져온다.
       Size resizeTo = getTargetSize(sourceFilePath);
+
+      // 썸네일을 생성한 뒤 임시 이미지 파일로 저장
       imageProcessor.resize(sourceFilePath, tempThumbnailFilePath, resizeTo);
 
+      // 스토리지에 섬네일을 저장한다
       fileStorage.saveTempFile(TempFile.create(tempImageFile.tempRootPath(), Paths.get(tempThumbnailFilePath)));
-      // Delete temp thumbnail file
+
+      // 임시 섬네일 파일 삭제
       Files.delete(Paths.get(tempThumbnailFilePath));
     } catch (Exception e) {
       log.error("Failed to create thumbnail for file `" + tempImageFile.getFile().getAbsolutePath() + "`", e);

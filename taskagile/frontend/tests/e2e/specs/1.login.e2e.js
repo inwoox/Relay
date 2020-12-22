@@ -14,22 +14,22 @@ module.exports = {
 
     browser.end()
   },
-  'login with invalid credentials': function (browser) {
-    const loginPage = browser.page.LoginPage()
-    loginPage
-      .navigate()
-      .login('not-exist', 'incorrect')
+  // 'login with invalid credentials': function (browser) {
+  //   const loginPage = browser.page.LoginPage()
+  //   loginPage
+  //     .navigate()
+  //     .login('not-exist', 'incorrect')
 
-    browser.pause(500)
+  //   browser.pause(500)
 
-    loginPage
-      .assert.visible('@formError')
-      .assert.containsText('@formError', 'Invalid credentials')
+  //   loginPage
+  //     .assert.visible('@formError')
+  //     .assert.containsText('@formError', 'Invalid credentials')
 
-    browser
-      .assert.urlEquals(browser.launchUrl + 'login')
-      .end()
-  },
+  //   browser
+  //     .assert.urlEquals(browser.launchUrl + 'login')
+  //     .end()
+  // },
   // 'login with username': function (browser) {
   //   const loginPage = browser.page.LoginPage()
   //   const homePage = browser.page.HomePage()

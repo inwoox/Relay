@@ -154,7 +154,7 @@
       <version>${im4java.version}</version>
     </dependency>
 
-		<!-- 파일을 아마존 S3에 저장하기 -->
+		<!-- 파일을 아마존 S3에 저장하기 의존성 추가 -->
 		<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-starter-aws</artifactId>

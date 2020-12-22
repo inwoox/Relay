@@ -38,11 +38,13 @@ public class S3FileStorage extends AbstractBaseFileStorage {
     }
   }
 
+  // MultipartFile 인스턴스를 application.properties에 명시된 서버의 temp 폴더에 저장
   @Override
   public TempFile saveAsTempFile(String folder, MultipartFile multipartFile) {
     return saveMultipartFileToLocalTempFolder(rootTempPath, folder, multipartFile);
   }
 
+  // 임시 파일을 최종 목적지에 저장하는데 활용
   @Override
   public void saveTempFile(TempFile tempFile) {
     Assert.notNull(s3, "S3FileStorage must be initialized properly");
@@ -53,6 +55,10 @@ public class S3FileStorage extends AbstractBaseFileStorage {
 
     try {
       log.debug("Saving file `{}` to s3", tempFile.getFile().getName());
+      
+      // 이 메서드에서 파일의 상대 경로를 버킷에 있는 파일의 키 값으로 활용한다.
+      // 버킷 이름은 application.properties에서 가져온다.
+      // 이렇게 하여 s3 클라이언트를 활용하여 파일을 S3로 업로드한다.
       PutObjectRequest putRequest = new PutObjectRequest(bucketName, fileKey, tempFile.getFile());
       putRequest.withCannedAcl(CannedAccessControlList.PublicRead);
       s3.putObject(putRequest);
@@ -63,12 +69,14 @@ public class S3FileStorage extends AbstractBaseFileStorage {
     }
   }
 
+  // 업로드된 MultipartFile을 최종 목적지에 저장하는데 활용
+  // 이 메서드에서 업로드된 파일인 MultipartFile 인스턴스를 S3에 저장한다.
   @Override
   public String saveUploaded(String folder, MultipartFile multipartFile) {
     Assert.notNull(s3, "S3FileStorage must be initialized properly");
 
     String originalFileName = multipartFile.getOriginalFilename();
-    ObjectMetadata metadata = new ObjectMetadata();
+    ObjectMetadata metadata = new ObjectMetadata();   // 커스텀 메타데이터인 Original-File-Name을 추가하기 위해 ObjectMetadata 인스턴스를 생성한다.
     metadata.setContentLength(multipartFile.getSize());
     metadata.setContentType(multipartFile.getContentType());
     metadata.addUserMetadata("Original-File-Name", originalFileName);
@@ -93,6 +101,7 @@ public class S3FileStorage extends AbstractBaseFileStorage {
     return s3ObjectKey;
   }
 
+  // S3 클라이언트 인스턴스를 생성하는데 AmazonS3ClientBuilder를 활용한다.
   private AmazonS3 initS3Client() {
     String s3Region = environment.getProperty("app.file-storage.s3-region");
     Assert.hasText(s3Region, "Property `app.file-storage.s3-region` must not be blank");
@@ -109,6 +118,14 @@ public class S3FileStorage extends AbstractBaseFileStorage {
       BasicAWSCredentials awsCredentials = new BasicAWSCredentials(s3AccessKey, s3SecretKey);
       AWSStaticCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
 
+      // S3 클라이언트 인스턴스를 생성하는데 AmazonS3ClientBuilder를 활용한다.
+      // 빌더에게 두 종류의 정보를 제공한다. 하나는 application.properties에 설정한 리전 정보, 다른 하나는 자격 증명 정보
+      
+      // 이 애플리케이션은 아마존의 EC2에 올라갈 것이기 때문에 자격 증명에 대해 두가지 옵션이 있다.
+      // 하나는 BasicAWSCredentials을 생성하는데 액세스 키와 시크릿 키를 활용하는 것이고,
+      // 다른 하나는 자격 증명 정보를 제공하기 위해 EC2 인스턴스에 정의된 IAM Role을 활용하는 것이다. 
+      // 개발 환경에서는 애플리케이션을 랩톱에서 동작시킬 경우, 액세스 키와 시크릿 키를 활용한다.
+      // 그렇지 않고, EC2에서 동작시킬 경우에는 IAM Role을 활용한다.
       AmazonS3ClientBuilder builder = AmazonS3ClientBuilder.standard();
       builder.setRegion(s3Region);
       builder.withCredentials(credentialsProvider);

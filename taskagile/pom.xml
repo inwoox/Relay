@@ -21,6 +21,7 @@
 		<commons-io.version>2.6</commons-io.version>
 		<im4java.version>1.4.0</im4java.version>
 		<aws-s3.version>1.11.409</aws-s3.version>
+		<javax.interceptor.version>1.2.1</javax.interceptor.version>
 	</properties>
 
 	<dependencies>
@@ -172,6 +173,18 @@
       <artifactId>spring-boot-starter-amqp</artifactId>
     </dependency>
 
+		<!-- 액추에이터 의존성 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!-- JDK 8에서 컴파일 에러를 피하기 위한 의존성 -->
+		<dependency>
+			<groupId>javax.interceptor</groupId>
+			<artifactId>javax.interceptor-api</artifactId>
+			<version>${javax.interceptor.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -209,8 +222,21 @@
 							<goal>stop</goal>
 						</goals>
 					</execution>
+					<!-- 골을 추가해서, 기본 정보 외에도 빌드 정보를 info 엔드포인트에 추가할 수 있다 -->
+					<execution>
+						<goals>
+							<goal>build-info</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
+
+			<!-- info 엔드포인트에 깃 커밋 정보를 추가하기 위해 git-commit-id-plugin을 추가한다 -->
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+			</plugin>
+
 			<!-- 이 플러그인을 통해 npm 명령어들을 실행할 수 있다 / mvn install로 실행 -->
 			<!-- 메이븐은 빌드 라이프 사이클에서 효과적으로 활용할 수 있는 다양한 내장 페이즈를 지원하며, 아래에서는 특정 페이즈마다 
 				명령어들을 실행한다. -->

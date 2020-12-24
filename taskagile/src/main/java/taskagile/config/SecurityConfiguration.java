@@ -1,5 +1,6 @@
 package taskagile.config;
 
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -80,6 +81,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http
       .authorizeRequests()									// PUBLIC에 명시된 경로 외 다른 요청은 인증된 사용자만 접근할 수 있음을 명시
         .antMatchers(PUBLIC).permitAll()
+        // 환경설정에서 액추에이터의 엔드포인트를 API와 분리하고 엔드 포인트에 9000번 포트를 할당한다.
+        // 서버의 방화벽을 활용해서 9000번 포트가 내부 네트워크를 통해서만 접근할 수 있도록 만드는데, 아래와 같이 설정하면 어디에서든 접근할 수 있다.
+        .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll() 
+        
+        // 또한 아래와 같이 하면 ACTUATOR_ADMIN 역할을 가지는 인증된 사용자만 엔드포인트에 접근할 수 있다
+        // .requestMatchers(EndpointRequest.toAnyEndpoint()).hasAnyRole("ACTUATOR_ADMIN")
+        // application.properties에서 포트 설정 제거 
         .anyRequest().authenticated()
       .and()																// 메서드 호출 체인을 http 오브젝트로 복원한다.
       	

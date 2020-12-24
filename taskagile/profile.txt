@@ -1,0 +1,27 @@
+# 스프링 프로파일을 통해 서로 다른 환경에 맞는 각각의 설정을 분리할 수 있다.
+dev : 로컬 개발 환경
+test : 단위 테스트 환경
+e2e : 엔드-투-엔드 테스트 환경
+staging : 스테이징 환경
+production : 운영 환경
+
+# 각각의 환경에 따른 파일 생성
+application-dev.properties (개발 환경 설정 파일)
+application.properties     (기본 환경 설정 파일)
+
+# 실행 시 active 프로파일 변경
+java -jar -Dspring.profiles.active=production app.jar
+mvn spring-boot:run -Dspring-boot.run.profiles=production
+
+# 테스트를 위한 환경 설정
+@ActiveProfiles("test")  // 단위 테스트에서, 어노테이션으로 활성 프로파일 설정
+
+# e2e 테스트를 위한 환경 설정
+mvn clean install 명령어로 e2e 테스트를 실행하면 실제로는 dev 프로파일을 활용한다.
+다른 명령어로 실행하더라도, dev 환경변수를 통해 e2e 테스트가 실행되면, e2e 테스트가 끝나면 애플리케이션을 멈춘다.
+e2e 테스트가 메이븐의 빌드 라이프사이클로 결합된 이 빌드 프로세스는 잘 동작한다.
+
+# 그러나 젠킨스로 빌드할 경우에는 문제가 된다. 
+젠킨스 서버의 환경은 dev 환경이 아니다. 따라서 젠킨스로 빌드할 경우에는 "dev" 프로파일을 사용할 수 없다.
+# 코드가 운영으로 배포되기 전에 e2e 테스트를 수행하기 위해 새로운 고립된 환경이 필요하다.
+# 이를 위해 "e2e"와 같은 새로운 프로파일을 만드는 것이 좋다.

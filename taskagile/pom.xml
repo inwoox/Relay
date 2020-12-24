@@ -179,21 +179,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>pre integration test</id>
-						<goals>
-							<!-- start 골이 pre integration test 페이즈를 위한 것임을 알려준다. -->
-							<goal>start</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>post integration test</id>
-						<goals>
-							<goal>stop</goal>
-						</goals>
-					</execution>
-				</executions>
 				<!-- 애플리케이션을 init.d 서비스로 설치하여, service taskagile start | stop으로 실행하기 위해 아래와 같이 설정한다 -->
 				<!-- .jar 파일을 완전히 실행할 수 있도록 만드는 것 -->
 				<!-- 애플리케이션을 서버로 배포하면, 그 애플리케이션은 /opt/taskagile/app.jar에 놓인다 -->
@@ -203,6 +188,28 @@
 				<configuration>
 					<executable>true</executable>
 				</configuration>
+				<executions>
+					<execution>
+						<id>pre integration test</id>
+						<goals>
+							<!-- start 골이 pre integration test 페이즈를 위한 것임을 알려준다. -->
+							<goal>start</goal>
+						</goals>
+						<!-- 활성 프로파일을 e2e로 설정 -->
+						<configuration>
+							<profiles>
+								<!-- 이 부분에서 스프링 프로파일의 활성 프로파일을 지정한다 -->
+								<profile>e2e</profile>
+							</profiles>
+						</configuration>
+					</execution>
+					<execution>
+						<id>post integration test</id>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<!-- 이 플러그인을 통해 npm 명령어들을 실행할 수 있다 / mvn install로 실행 -->
 			<!-- 메이븐은 빌드 라이프 사이클에서 효과적으로 활용할 수 있는 다양한 내장 페이즈를 지원하며, 아래에서는 특정 페이즈마다 

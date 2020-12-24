@@ -194,6 +194,15 @@
 						</goals>
 					</execution>
 				</executions>
+				<!-- 애플리케이션을 init.d 서비스로 설치하여, service taskagile start | stop으로 실행하기 위해 아래와 같이 설정한다 -->
+				<!-- .jar 파일을 완전히 실행할 수 있도록 만드는 것 -->
+				<!-- 애플리케이션을 서버로 배포하면, 그 애플리케이션은 /opt/taskagile/app.jar에 놓인다 -->
+				<!-- 애플리케이션을 init.d 서비스로 설치하려면 다음과 같이 심볼릭 링크를 생성해야한다-->
+				<!-- sudo ln -s /opt/taskagile/app.jar /etc/init.d/taskagile -->
+				<!-- 이렇게 생성하면, jar 파일 소유자로서 서비스 시작 / var/run/taskagile/taskagile.pid 파일로 PID 추적 / var/log/taskagile.log 로그 기록 가능 -->
+				<configuration>
+					<executable>true</executable>
+				</configuration>
 			</plugin>
 			<!-- 이 플러그인을 통해 npm 명령어들을 실행할 수 있다 / mvn install로 실행 -->
 			<!-- 메이븐은 빌드 라이프 사이클에서 효과적으로 활용할 수 있는 다양한 내장 페이즈를 지원하며, 아래에서는 특정 페이즈마다 

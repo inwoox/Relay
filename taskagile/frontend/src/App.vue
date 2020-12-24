@@ -14,6 +14,10 @@ export default {
       // $rt 프로퍼티에 바인딩 되어 있는 RealTimeClient 클래스 인스턴스의 init 메서드를 통해, SockJS 웹소켓 인스턴스를 생성해 연결 수립
       this.$rt.init(myData.settings.realTimeServerUrl, myData.user.token)
     })
+
+    this.$bus.$on('user.unauthenticated', () => {
+      this.$router.push({name: 'login'})
+    })
   }
 }
 </script>
@@ -22,6 +26,7 @@ export default {
 html, body {
   height: 100%;
   font-size: 14px;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif !important;
 }
 
 #app, .page {
@@ -111,5 +116,9 @@ textarea.form-control:focus {
       }
     }
   }
+}
+
+.modal-open .modal-backdrop.show {
+    opacity: .7;
 }
 </style>

@@ -93,7 +93,7 @@ describe('LoginPage.vue', () => {
     wrapper.vm.submitForm()
     expect(authenticateSpy).toBeCalled()
     await wrapper.vm.$nextTick()
-    expect(stub).toHaveBeenCalledWith({name: 'HomePage'})
+    expect(stub).toHaveBeenCalledWith({name: 'home'})
   })
 
   // 자격이 유효하지 않으면 실패해야한다. 

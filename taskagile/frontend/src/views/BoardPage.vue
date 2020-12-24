@@ -49,8 +49,8 @@
                 </div>
               </div>
               <div class="list-wrapper add-list">
-                <div class="add-list-button" v-show="!addListForm.open" @click="openAddListForm()">+ Add a list</div>
-                <form @submit.prevent="addCardList()" v-show="addListForm.open" class="add-list-form">
+                <div class="add-list-button" v-if="!addListForm.open" @click="openAddListForm()">+ Add a list</div>
+                <form @submit.prevent="addCardList()" v-if="addListForm.open" class="add-list-form">
                   <div class="form-group">
                     <input type="text" class="form-control" v-model="addListForm.name" id="cardListName" placeholder="Type list name here" />
                   </div>
@@ -146,15 +146,18 @@ export default {
       if (to.name === from.name && to.name === 'board') {
         this.unsubscribeFromRealTimeUpdate(from.params.boardId)
         this.loadBoard(to.params.boardId)
+        console.log('[BoardPage] Load Board')
       }
       // Open a card
       if (to.name === 'card' && from.name === 'board') {
         this.loadCard(to.params.cardId).then(() => {
           this.openCardWindow()
         })
+        console.log('[CardPage] Load Card')
       }
       // Close a card
       if (to.name === 'board' && from.name === 'card') {
+        console.log('[CardPage] Close Card')
         this.closeCardWindow()
         this.openedCard = {}
       }
@@ -175,7 +178,7 @@ export default {
   //   this.$el.addEventListener('click', this.dismissActiveForms)
   // },
   mounted () {
-    console.log('[BoardPage] Mouted')
+    console.log('[BoardPage] Mounted')
     
     // BoardPage가 마운트 됐을 때, 서버로부터 데이터를 로드하기 위해 loadInitial() 메서드를 호출한다.
     this.loadInitial() 
@@ -289,11 +292,13 @@ export default {
       if (!this.addListForm.name) {
         return
       }
+
       const cardList = {
         boardId: this.board.id,
         name: this.addListForm.name,
         position: this.cardLists.length + 1
       }
+      console.log("2")
       cardListService.add(cardList).then(savedCardList => {
         this.cardLists.push({
           id: savedCardList.id,
@@ -305,6 +310,7 @@ export default {
           }
         })
         this.closeAddListForm()
+        console.log("3")
       }).catch(error => {
         notify.error(error.message)
       })

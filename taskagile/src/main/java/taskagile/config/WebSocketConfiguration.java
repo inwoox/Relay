@@ -30,6 +30,6 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
   // SockJS는 웹소켓으로 클라이언트와 서버 간 실시간 연결을 제공한다.
   @Override
   public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-    registry.addHandler(requestDispatcher, "/rt").setAllowedOrigins("*").withSockJS();
+    registry.addHandler(requestDispatcher, "/rt").withSockJS();
   }
 }

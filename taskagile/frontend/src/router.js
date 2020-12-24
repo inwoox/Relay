@@ -12,6 +12,11 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
   {
+    path: '/',
+    name: 'home',
+    component: HomePage
+  },
+  {
     path: '/login',
     name: 'LoginPage',
     component: LoginPage
@@ -20,11 +25,6 @@ export default new Router({
     path: '/register',
     name: 'RegisterPage',
     component: RegisterPage
-  },
-  {
-    path: '/',
-    name: 'HomePage',
-    component: HomePage
   },
   // 두 경로 모두 동작하게 하기 위해 BoardPage를 리팩토링한다.
   {

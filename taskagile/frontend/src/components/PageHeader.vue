@@ -59,7 +59,8 @@ export default {
   },
   methods: {
     goHome () {
-      this.$router.push({name: 'HomePage'})
+      this.$router.push({name: 'home'})
+      console.log("gohome")
     },
     openBoard (board) {
       this.$router.push({name: 'board', params: { boardId: board.id }})

@@ -24,6 +24,7 @@ public class AmqpDomainEventPublisher implements DomainEventPublisher {
     this.exchange = exchange;
   }
 
+  // 도메인 이벤트를 RabbitMQ 메시지로 만들어서 전송하기 위해 rabbitTemplate의 convertAndSend() 메서드를 호출
   @Override
   public void publish(DomainEvent event) {
     log.debug("Publishing domain event: " + event);

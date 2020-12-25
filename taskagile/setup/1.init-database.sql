@@ -234,6 +234,7 @@ CREATE TABLE IF NOT EXISTS `task_agile`.`activity` (
   `board_id` INT(11) NOT NULL,
   `type` TINYINT(1) NOT NULL DEFAULT 0,
   `detail` JSON NOT NULL,
+  `ip_address` VARCHAR(100) NOT NULL,
   `created_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_user_id_idx` (`user_id` ASC),

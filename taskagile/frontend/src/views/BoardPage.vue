@@ -49,8 +49,8 @@
                 </div>
               </div>
               <div class="list-wrapper add-list">
-                <div class="add-list-button" v-if="!addListForm.open" @click="openAddListForm()">+ Add a list</div>
-                <form @submit.prevent="addCardList()" v-if="addListForm.open" class="add-list-form">
+                <div class="add-list-button" v-show="!addListForm.open" @click="openAddListForm()">+ Add a list</div>
+                <form @submit.prevent="addCardList()" v-show="addListForm.open" class="add-list-form">
                   <div class="form-group">
                     <input type="text" class="form-control" v-model="addListForm.name" id="cardListName" placeholder="Type list name here" />
                   </div>

@@ -4,7 +4,7 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/task_agile?useUnicode=true&characterEncoding=UTF-8
-    username: root
+    username: inwoo
     password: 1234
     driver-class-name: com.mysql.jdbc.Driver
 
@@ -13,7 +13,7 @@ spring:
     open-in-view: false  # Open Session In View :  Transaction이 종료된 후에도 Controller의 Session이 close 되지 않았기 때문에, 
                          # 영속 객체는 Persistence 상태를 유지 가능하다, Session이 열려있고 Persistence 상태이기 때문에 프록시 객체에 대한 Lazy Loading을 수행가능 하게 하는 기능                                       
     hibernate:
-      ddl-auto: none                                              # 하이버네이트가 데이터베이스의 자동 생성, 삭제를 할 수 있게 하는 기능 
+      ddl-auto: create-drop                                              # 하이버네이트가 데이터베이스의 자동 생성, 삭제를 할 수 있게 하는 기능 
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect  # JPA에게 데이터베이스 플랫폼으로 MySQL을 사용한다고 알려준다.
     
   

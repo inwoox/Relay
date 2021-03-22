@@ -2,8 +2,6 @@ package taskagile.domain.application.impl;
 
 import taskagile.domain.application.command.RegisterCommand;
 import taskagile.domain.common.event.DomainEventPublisher;
-import taskagile.domain.common.mail.MailManager;
-import taskagile.domain.common.mail.MessageVariable;
 import taskagile.domain.model.user.*;
 import taskagile.domain.model.user.event.UserRegisteredEvent;
 import taskagile.utils.IpAddress;
@@ -13,7 +11,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import taskagile.domain.common.mail.CustomMailSenderInterface;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -21,20 +18,14 @@ import static org.mockito.Mockito.*;
 public class UserServiceImplTests {
 
   private RegistrationManagement registrationManagementMock;
-  private DomainEventPublisher domainEventPublisherMock;
-  private MailManager mailManagerMock;
   private UserRepository userRepositoryMock;
-  private CustomMailSenderInterface customMailMock;
   private UserServiceImpl instance;
 
   @Before
   public void setUp() {
     registrationManagementMock = mock(RegistrationManagement.class);
-    domainEventPublisherMock = mock(DomainEventPublisher.class);
-    mailManagerMock = mock(MailManager.class);
     userRepositoryMock = mock(UserRepository.class);
-    instance = new UserServiceImpl(registrationManagementMock, domainEventPublisherMock,
-      mailManagerMock, userRepositoryMock, customMailMock);
+    instance = new UserServiceImpl(registrationManagementMock, userRepositoryMock);
   }
 
   //-------------------------------------------
@@ -168,18 +159,5 @@ public class UserServiceImplTests {
 
     instance.register(command);
 
-    verify(mailManagerMock).send(
-      emailAddress,
-      "Welcome to TaskAgile",
-      "welcome.ftl",
-      MessageVariable.from("user", newUser)
-    );
-
-    ArgumentCaptor<UserRegisteredEvent> argumentCaptor = ArgumentCaptor.forClass(UserRegisteredEvent.class);
-    verify(domainEventPublisherMock).publish(argumentCaptor.capture());
-
-    UserRegisteredEvent event = argumentCaptor.getValue();
-    assertEquals(newUser.getId(), event.getUserId());
-    assertEquals(ipAddress, event.getIpAddress());
   }
 }

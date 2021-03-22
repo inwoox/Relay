@@ -1,12 +1,8 @@
 package taskagile.web.api;
 
-import taskagile.domain.application.BoardService;
-import taskagile.domain.application.TeamService;
 import taskagile.domain.application.UserService;
 import taskagile.domain.common.security.CurrentUser;
 import taskagile.domain.common.security.TokenManager;
-import taskagile.domain.model.board.Board;
-import taskagile.domain.model.team.Team;
 import taskagile.domain.model.user.SimpleUser;
 import taskagile.domain.model.user.User;
 import taskagile.web.result.ApiResult;
@@ -22,19 +18,13 @@ import java.util.List;
 public class MeApiController {
 
   private String realTimeServerUrl;
-  private TeamService teamService;
-  private BoardService boardService;
   private UserService userService;
   private TokenManager tokenManager;
 
   public MeApiController(@Value("${app.real-time-server-url}") String realTimeServerUrl,
-                         TeamService teamService,
-                         BoardService boardService,
                          UserService userService,
                          TokenManager tokenManager) {
     this.realTimeServerUrl = realTimeServerUrl;
-    this.teamService = teamService;
-    this.boardService = boardService;
     this.userService = userService;
     this.tokenManager = tokenManager;
   }
@@ -46,13 +36,11 @@ public class MeApiController {
   @GetMapping("/api/me")
   public ResponseEntity<ApiResult> getMyData(@CurrentUser SimpleUser currentUser) {
     User user = userService.findById(currentUser.getUserId());
-    List<Team> teams = teamService.findTeamsByUserId(currentUser.getUserId());
-    List<Board> boards = boardService.findBoardsByMembership(currentUser.getUserId());
 
     // 실시간 토큰인 JWT 문자열을 생성한다.
     // 실시간 클라이언트가 이 토큰을 활용해 연결을 초기화하면, WebSocketHandler 구현체의 afterConnectionEstablished() 메서드에서 요청을 받는다.
     // 실시간 토큰은 이 API의 응답에 포함되어 클라이언트로 전송된다. 
     String realTimeToken = tokenManager.jwt(user.getId());
-    return MyDataResult.build(user, teams, boards, realTimeServerUrl, realTimeToken);
+    return MyDataResult.build(user, realTimeServerUrl, realTimeToken);
   }
 }

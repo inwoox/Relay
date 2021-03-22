@@ -11,16 +11,11 @@ import org.springframework.util.Assert;
 
 import taskagile.domain.application.UserService;
 import taskagile.domain.application.command.RegisterCommand;
-import taskagile.domain.common.event.DomainEventPublisher;
-import taskagile.domain.common.mail.CustomMailSenderInterface;
-import taskagile.domain.common.mail.MailManager;
-import taskagile.domain.common.mail.MessageVariable;
 import taskagile.domain.model.user.RegistrationException;
 import taskagile.domain.model.user.RegistrationManagement;
 import taskagile.domain.model.user.SimpleUser;
 import taskagile.domain.model.user.*;
 import taskagile.domain.model.user.UserRepository;
-import taskagile.domain.model.user.event.UserRegisteredEvent;
 import taskagile.web.api.authenticate.AuthenticationFilter;
 
 
@@ -64,18 +59,11 @@ public class UserServiceImpl implements UserService {
 	// UserService는 어떤 비즈니스 로직도 포함하지 않는다.
 
   private RegistrationManagement registrationManagement;  // 도메인 서비스 
-  private DomainEventPublisher domainEventPublisher;      // 인프라 서비스
-  private MailManager mailManager;						 					  // 인프라 서비스
   private UserRepository userRepository;        					// 인프라 서비스 - 실제 구현은 인프라 쪽에서 한다.
-  private CustomMailSenderInterface customMail;           // 인프라 서비스
 
-  public UserServiceImpl(RegistrationManagement registrationManagement, DomainEventPublisher domainEventPublisher, 
-  		MailManager mailManager, UserRepository userRepository, CustomMailSenderInterface customMail) {
+  public UserServiceImpl(RegistrationManagement registrationManagement, UserRepository userRepository) {
     this.registrationManagement = registrationManagement;
-    this.domainEventPublisher = domainEventPublisher;
-    this.mailManager = mailManager;
     this.userRepository = userRepository;
-    this.customMail = customMail;
   }
   
   // UserService가 UserDetailsService를 상속하므로, 이 메서드를 구현해야한다.
@@ -118,30 +106,14 @@ public class UserServiceImpl implements UserService {
     // 애플리케이션 코어에서는 , 코어의 내부가 외부와 분리될 수 있도록 RegistrationCommand를 사용하지 않는다.
     
     // 도메인 서비스에 의존하여 , 그 안의 인프라서비스를 통해 유저를 등록한다.
-    User newUser = registrationManagement.register(
+    registrationManagement.register(
       command.getUsername(),
       command.getEmailAddress(),
       command.getFirstName(),
       command.getLastName(),
       command.getPassword());
 
-    
-    sendWelcomeMessage(newUser); 
-    domainEventPublisher.publish(new UserRegisteredEvent(newUser, command));
     logger.debug("*** User Registered ***");
   }
-
   
-  private void sendWelcomeMessage(User user) { 
-  	
-  	// 유저, 템플릿, 템플릿에 들어갈 데이터만 포함하여 send 호출
-  	customMail.send(user, "welcome.ftl", MessageVariable.from("user", user));
-  	logger.debug("*** Mail Send ***");
-//    mailManager.send(										 
-//      user.getEmailAddress(),						 // 유저의 이메일 주소
-//      "Welcome to TaskAgile",						 // 제목
-//      "welcome.ftl",										 // 템플릿	
-//      MessageVariable.from("user", user) // 등록하는 유저를 오브젝트로, user라는 이름의 MessageVariable을 생성 / 템플릿의 데이터로 전달됨
-//    );
-  }
 }

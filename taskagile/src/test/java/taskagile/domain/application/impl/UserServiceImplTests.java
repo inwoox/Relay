@@ -1,14 +1,11 @@
 package taskagile.domain.application.impl;
 
 import taskagile.domain.application.command.RegisterCommand;
-import taskagile.domain.common.event.DomainEventPublisher;
 import taskagile.domain.model.user.*;
-import taskagile.domain.model.user.event.UserRegisteredEvent;
 import taskagile.utils.IpAddress;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -67,15 +64,7 @@ public class UserServiceImplTests {
     String existUsername = "ExistUsername";
     User foundUser = User.create(existUsername, "user@taskagile.com", "Test", "User",
       "EncryptedPassword!");
-    // Found user from the database should have id. And since no setter of
-    // id is available in User, we have to write the value to it using reflection
-    //
-    // Besides creating an actual instance of User, we can also create a user
-    // mock, like the following.
-    // User mockUser = Mockito.mock(User.class);
-    // when(mockUser.getUsername()).thenReturn(existUsername);
-    // when(mockUser.getPassword()).thenReturn("EncryptedPassword!");
-    // when(mockUser.getId()).thenReturn(1L);
+    
     FieldUtils.writeField(foundUser, "id", 1L, true);
     when(userRepositoryMock.findByUsername(existUsername)).thenReturn(foundUser);
     Exception exception = null;

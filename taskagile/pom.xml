@@ -43,10 +43,8 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-		</dependency>
+
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
@@ -130,10 +128,6 @@
       <scope>runtime</scope>
     </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
-		</dependency>
 
 		<!-- 구성 속성을 정의하는데 필요한 라이브러리 -->
 		<dependency>
@@ -147,31 +141,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
-
-		<!-- 이미지 처리 관련 라이브러리 -->
 		<dependency>
-      <groupId>org.im4java</groupId>
-      <artifactId>im4java</artifactId>
-      <version>${im4java.version}</version>
-    </dependency>
-
-		<!-- 파일을 아마존 S3에 저장하기 의존성 추가 -->
-		<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-starter-aws</artifactId>
-				<version>2.0.1.RELEASE</version>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
 		</dependency>
-		<dependency>
-      <groupId>com.amazonaws</groupId>
-      <artifactId>aws-java-sdk-s3</artifactId>
-      <version>${aws-s3.version}</version>
-    </dependency>
-
-		<!-- AMQP로 활동을 비동기로 추적 -->
-		<dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-amqp</artifactId>
-    </dependency>
 
 		<!-- 액추에이터 의존성 -->
 		<dependency>

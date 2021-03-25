@@ -12,7 +12,6 @@ import java.util.Date;
 public abstract class DomainEvent implements Serializable {
 
   private static final long serialVersionUID = 8945128060450240352L;
-
   private UserId userId;
   private IpAddress ipAddress;
   private Date occurredAt;
@@ -32,11 +31,9 @@ public abstract class DomainEvent implements Serializable {
   public UserId getUserId() {
     return userId;
   }
-
   public IpAddress getIpAddress() {
     return ipAddress;
   }
-
   public Date getOccurredAt() {
     return occurredAt;
   }

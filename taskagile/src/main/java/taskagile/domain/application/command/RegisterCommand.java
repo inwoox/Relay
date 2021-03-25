@@ -29,19 +29,15 @@ public class RegisterCommand extends AnonymousCommand {
   public String getUsername() {
     return this.username;
   }
-
   public String getEmailAddress() {
     return this.emailAddress;
   }
-
   public String getFirstName() {
     return firstName;
   }
-
   public String getLastName() {
     return lastName;
   }
-
   public String getPassword() {
     return this.password;
   }

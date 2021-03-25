@@ -35,18 +35,16 @@
         <button class="btn btn-link" @click="createTeam()">+ {{ $t('homePage.createNewTeam') }}</button>
       </div>
     </div>
-    <CreateBoardModal
-      :teamId="selectedTeamId"
-      @created="onBoardCreated" />
-    <CreateTeamModal />
+<!--    <CreateBoardModal-->
+<!--      :teamId="selectedTeamId"-->
+<!--      @created="onBoardCreated" />-->
+<!--    <CreateTeamModal />-->
   </div>
 </template>
 
 <script>
 import $ from 'jquery'
 import PageHeader from '@/components/PageHeader.vue'
-import CreateBoardModal from '@/modals/CreateBoardModal.vue'
-import CreateTeamModal from '@/modals/CreateTeamModal.vue'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -64,20 +62,16 @@ export default {
   },
   components: {
     PageHeader,
-    CreateBoardModal,
-    CreateTeamModal
   },
   methods: {
     openBoard (board) {
       this.$router.push({name: 'board', params: {boardId: board.id}})
     },
-    createBoard (team) {                                                // 단순히 팝업 창을 띄우기 위한 메서드
-      this.selectedTeamId = team ? team.id : 0                          // 띄워진 팝업 창에서 보드가 생성되면, 팝업창에서
-      $('#createBoardModal').modal('show')                              // created 이벤트를 발생시키고, 그 이벤트를 
-    },                                                                  // 여기 HomePage.vue에서 받아 onBoardCreated 메서드를 실행
-    createTeam () {
-      $('#createTeamModal').modal('show')
-    },
+    // createBoard (team) {
+    //   this.selectedTeamId = team ? team.id : 0
+    //   $('#createBoardModal').modal('show')
+    // },
+
     onBoardCreated (boardId) {                                          // 사용자를 보드 페이지로 리다이렉트시킨다.
       this.$router.push({name: 'board', params: {boardId: boardId}})
     }

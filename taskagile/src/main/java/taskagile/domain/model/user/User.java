@@ -62,39 +62,30 @@ public class User extends AbstractBaseEntity {
     this.lastName = lastName;
   }
 
-
   public UserId getId() {
     return new UserId(id);
   }
-
   public String getUsername() {
     return username;
   }
-
   public String getEmailAddress() {
     return emailAddress;
   }
-
   public String getPassword() {
     return password;
   }
-
   public String getFirstName() {
     return firstName;
   }
-
   public String getLastName() {
     return lastName;
   }
-
   public String getInitials() {
     return (firstName.substring(0, 1) + lastName.substring(0, 1)).toUpperCase();
   }
-
   public Date getCreatedDate() {
     return createdDate;
   }
-
 
   // 두개의 User 객체를 비교할 때, username과 emailAddress로만 비교하기 위해 (두개만 같으면 같다)
   // AbstractBaseEntity를 상속하고, equals, hashCode 두개의 메서드를 오버라이드한다.

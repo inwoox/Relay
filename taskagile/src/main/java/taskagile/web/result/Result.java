@@ -13,20 +13,16 @@ public final class Result {
   public static ResponseEntity<ApiResult> created() {
     return ResponseEntity.status(201).build();
   }
-
   public static ResponseEntity<ApiResult> ok() {
     return ResponseEntity.ok().build();
   }
-
   public static ResponseEntity<ApiResult> ok(String message) {
     Assert.hasText(message, "Parameter `message` must not be blank");
-
     return ok(ApiResult.message(message));
   }
 
   public static ResponseEntity<ApiResult> ok(ApiResult payload) {
     Assert.notNull(payload, "Parameter `payload` must not be null");
-
     return ResponseEntity.ok(payload);
   }
 
@@ -41,7 +37,6 @@ public final class Result {
   public static ResponseEntity<ApiResult> notFound() {
     return ResponseEntity.notFound().build();
   }
-
   public static ResponseEntity<ApiResult> unauthenticated() {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }

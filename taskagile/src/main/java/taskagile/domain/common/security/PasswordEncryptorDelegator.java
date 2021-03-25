@@ -15,15 +15,14 @@ public class PasswordEncryptorDelegator implements PasswordEncryptor {
 	
 	// 그래서 결과적으로 주입 받은 BCryptPasswordEncoder 빈을 사용해 암호화를 한다. 
 	// 패스워드가 암호화되면 길이가 길어지므로, 이것을 고려하여 user 테이블의 password column의 크기를 설정한다. 
-	
-	
-	private PasswordEncoder passwordEncoder;
-  public PasswordEncryptorDelegator(PasswordEncoder passwordEncoder) {
+
+    private PasswordEncoder passwordEncoder;
+    public PasswordEncryptorDelegator(PasswordEncoder passwordEncoder) {
     this.passwordEncoder = passwordEncoder;
   }
 
-  @Override
-  public String encrypt(String rawPassword) {
+    @Override
+    public String encrypt(String rawPassword) {
     return passwordEncoder.encode(rawPassword);
   }
 }

@@ -19,23 +19,18 @@ import taskagile.web.api.authenticate.SimpleAuthenticationSuccessHandler;
 import taskagile.web.api.authenticate.SimpleLogoutSuccessHandler;
 
 
-
 // 스프링 시큐리티 설정하기 
 // WebSecurityConfigurerAdapter 클래스를 상속하고, @EnableWebSecurity 어노테이션을 적용한다.
 // 이렇게 하면 스프링 시큐리티 필터 체인이 자동으로 포함 된다.
 
-
 // 스프링 시큐리티는 필터를 사용해, 요청 단위 인증과 권한 부여를 수행하고, AOP를 사용해 메서드 단위 권한 부여를 수행한다.
 // 진행흐름 : HTTP 요청 -> 필터 (필터 체인) -> 컨트롤러 -> AOP -> 서비스 
 
-
 // 메서드 보안 (AOP 사용)
-
 // @Secure 어노테이션 사용  : @EnableGlobalMethodSecurity(securedEnabled = true)를 설정한 MethodSecurityConfig 클래스 / 메서드에 적용시 @Secured("ROLE_ADMIN") 
 // JSR-250 @RoleAllowed : @EnableGlobalMethodSecurity(jsr250Enabled = true) 를 설정한 MethodSecurityConfig 클래스 / 메서드에 적용시 @RoleAllowed("ROLE_USER")
 // @PreAuthorize, @PostAuthorize 어노테이션을 통해 스프링 표현 언어를 사용
 // MethodSecurityInterceptor 인터페이스의 인스턴스가 메서드의 호출을 가로채고, 접근 권한 의사 결정은 AccessDecisionManager에게 위임된다.
-
 
 // 스프링 시큐리티 필터 체인  (아래를 제외하고도 다양한 내장 필터가 존재한다)
 
@@ -74,35 +69,29 @@ import taskagile.web.api.authenticate.SimpleLogoutSuccessHandler;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private static final String[] PUBLIC = new String[]{ "/error", "/login", "/logout", "/register", "/api/registrations" };
-
   // 스프링 시큐리티 규칙 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
-      .authorizeRequests()									// PUBLIC에 명시된 경로 외 다른 요청은 인증된 사용자만 접근할 수 있음을 명시
+        .authorizeRequests()	          // PUBLIC에 명시된 경로 외 다른 요청은 인증된 사용자만 접근할 수 있음을 명시
         .antMatchers(PUBLIC).permitAll()
         // 환경설정에서 액추에이터의 엔드포인트를 API와 분리하고 엔드 포인트에 9000번 포트를 할당한다.
         // 서버의 방화벽을 활용해서 9000번 포트가 내부 네트워크를 통해서만 접근할 수 있도록 만드는데, 아래와 같이 설정하면 어디에서든 접근할 수 있다.
-        .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll() 
-        
+        .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
         // 또한 아래와 같이 하면 ACTUATOR_ADMIN 역할을 가지는 인증된 사용자만 엔드포인트에 접근할 수 있다
         // .requestMatchers(EndpointRequest.toAnyEndpoint()).hasAnyRole("ACTUATOR_ADMIN")
-        // application.properties에서 포트 설정 제거 
+        // application.properties에서 포트 설정 제거
         .anyRequest().authenticated()
-      .and()																// 메서드 호출 체인을 http 오브젝트로 복원한다.
-      	
-      	// 지정된 UsernamePasswordAuthenticationFilter 필터의 순서에 커스텀 필터를 추가하여, 필터를 대체 
-        // addFilterBefore (지정된 필터 앞) / addFilterAfter (지정된 필터 뒤)
-        .addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-        .formLogin()												// 애플리케이션이 폼을 기반으로 한 인증을 활용
-        .loginPage("/login")								// 로그인 페이지의 경로를 명시
-      .and()
+        .and()												                              // 메서드 호출 체인을 http 오브젝트로 복원한다.
+        .addFilterAt(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)  // 커스텀 필터
+        .formLogin()									                                  // 애플리케이션이 폼을 기반으로 한 인증을 활용
+        .loginPage("/login")								                              // 로그인 페이지의 경로를 명시
+        .and()
         .logout()
         .logoutUrl("/logout")
         .logoutSuccessHandler(logoutSuccessHandler())
-      .and()
+        .and()
         .csrf().disable();
-    
   }
 
   // 스프링 시큐리티 무시 규칙
@@ -110,15 +99,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   public void configure(WebSecurity web) {
     web.ignoring().antMatchers("/static/**", "/js/**", "/css/**", "/images/**", "/favicon.ico");
   }
-  
-  //  실제로 유저를 인증하는 AuthenticationProvider 구현체를 변경할 때 이렇게 설정
-  //  @Override 
-	//  protected void configure(AuthenticationManagerBuilder auth) throws Exception 
-	//  { /* AuthenticationProvider 구현체 */ 
-	//  	auth.authenticationProvider(authenticationProvider); 
-	//  	auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder); 
-	//  }
-
 
   // 커스터마이징할 필터 설정 추가 및 빈으로 등록
   @Bean

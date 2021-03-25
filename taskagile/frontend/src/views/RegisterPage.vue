@@ -1,45 +1,18 @@
 
-  // Header
-    // 전체 폼
-      // 로고 / 설명
-      // 회원 가입 폼
-        // 이름
-          // 이름 입력
-          // 이름 필드 오류 표시
-        // 이메일
-          // 이메일 입력
-          // 이메일 필드 오류 표시
-        // 패스워드
-          // 패스워드 입력
-          // 패스워드 필드 오류 표시
-        // submit
-          // submit 버튼
-          // 동의 안내 / 로그인 링크
-  // Footer
-    // copyright
-    // About, 서비스 약관, 개인정보보호 정책, SNS, GitHub 등
 
 <template>
   <div class="container">
-    <!-- Header -->
     <div class="row justify-content-center"> <!-- .row 요소 안의 내용을 중앙에 위치시키는 부트스트랩 유틸리티 클래스 -->
-      <!-- 전체 폼 -->
       <div class="register-form">
-        <!-- 로고 / 태그 라인 -->
         <div class="logo-wrapper">
           <img class="logo" src="/images/logo.png">
           <div class="tagline">Open source task management tool</div>
         </div>
-        <!-- 회원가입 폼 -->
         <form @submit.prevent="submitForm">
           <div v-show="errorMessage" class="failed">{{ errorMessage }}</div>
-
-          <!-- 이름 부분 -->
           <div class="form-group"> <!-- 부트 스트랩은 .form-group이 적용된 필드의 패딩과 마진을 멋지게 정리 -->
-            <!-- 이름 입력 부분 -->
             <label for="username"> Username </label>
             <input type="text" class="form-control" id="username" v-model="form.username">
-            <!-- 이름 필드 오류 표시 -->
             <div class="field-error" v-if="$v.form.username.$dirty">
               <div class="error" v-if="!$v.form.username.required">이름을 입력해야합니다.</div>
               <div class="error" v-if="!$v.form.username.alphaNum">이름은 글자와 숫자만 가능합니다.</div>
@@ -47,20 +20,15 @@
               <div class="error" v-if="!$v.form.username.maxLength">이름은 {{$v.form.username.$params.maxLength.max}}자 이하여야합니다.</div>
             </div>
           </div>
-
-          <!-- 이메일 부분 -->
           <div class="form-group">
-            <!-- 이메일 입력 부분 -->
             <label for="emailAddress">Email address</label>
             <input type="email" class="form-control" id="emailAddress" v-model="form.emailAddress">
-            <!-- 이메일 필드 오류 표시 -->
             <div class="field-error" v-if="$v.form.emailAddress.$dirty">
               <div class="error" v-if="!$v.form.emailAddress.required">이메일을 입력해야합니다.</div>
               <div class="error" v-if="!$v.form.emailAddress.email">유효한 이메일 주소가 아닙니다.</div>
               <div class="error" v-if="!$v.form.emailAddress.maxLength">이메일 주소는 {{$v.form.emailAddress.$params.maxLength.max}}자 이하여야합니다.</div>
             </div>
           </div>
-
           <div class="form-group">
             <label for="firstName">{{ $t('registerPage.form.firstName.label') }}</label>
             <input type="text" class="form-control" id="firstName" v-model="form.firstName">
@@ -81,33 +49,23 @@
               <div class="error" v-if="!$v.form.lastName.maxLength">{{ $t('registerPage.form.lastName.maxLength', {maxLength: $v.form.lastName.$params.maxLength.max}) }}</div>
             </div>
           </div>
-
-          <!-- 패스워드 부분 -->
           <div class="form-group">
-            <!-- 패스워드 입력 부분 -->
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" v-model="form.password">
-            <!-- 패스워드 필드 오류 표시 -->
             <div class="field-error" v-if="$v.form.password.$dirty">
               <div class="error" v-if="!$v.form.password.required">패스워드를 입력해야합니다.</div>
               <div class="error" v-if="!$v.form.password.minLength">패스워드는 {{$v.form.password.$params.minLength.min}}자 이상이어야합니다.</div>
               <div class="error" v-if="!$v.form.password.maxLength">패스워드는 {{$v.form.password.$params.maxLength.min}}자 이하여야합니다.</div>
             </div>
           </div>
-
-          <!-- submit 부분 -->
           <button type="submit" class="btn btn-primary btn-block">Create account</button>
-          <!-- 계정 만들기 설명 및 로그인 링크 -->
           <p class="accept-terms text-muted">Create account를 클릭하면, <a href="#">서비스 약관</a> 및 <a href="#">개인정보 보호정책</a>에 동의하는 것입니다.</p>
           <p class="text-center text-muted">계정이 있으시면 <a href="/login">로그인</a>하세요.</p>
         </form>
       </div>
     </div>
-    <!-- Footer -->
     <footer class="footer">
-      <!-- copyright -->
       <span class="copyright">&copy; 2020 TaskAgile.com</span>
-      <!-- 약관, 정책, SNS, 관련 링크 -->
       <ul class="footer-links list-inline float-right"> <!-- 부트스트랩의 유틸리티 클래스들 -->
         <li class="list-inline-item"><a href="#">About</a></li>
         <li class="list-inline-item"><a href="#">Terms of Service</a></li>
